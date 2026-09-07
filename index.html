@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>科技型中小企业估值成果 · 16:9大屏</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #030c1c;
+      --panel: rgba(5, 25, 53, .88);
+      --line: rgba(42, 184, 255, .36);
+      --cyan: #2ed7ff;
+      --blue: #3988ff;
+      --green: #31e0ae;
+      --amber: #ffbe55;
+      --violet: #b6a5ff;
+      --text: #f3f8ff;
+      --muted: #8eafd0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #01060f; }
+    body {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      overflow: hidden; color: var(--text);
+      font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+    }
+    #fit { overflow: hidden; flex: none; }
+    #stage {
+      width: 1920px; height: 1080px; transform-origin: top left; flex: none;
+      padding: 14px 20px 12px; display: flex; flex-direction: column; gap: 10px;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(16, 83, 162, .28), transparent 44%),
+        linear-gradient(rgba(18, 67, 120, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(18, 67, 120, .07) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 42px 42px, 42px 42px, auto;
+    }
+    .head { display: flex; align-items: center; gap: 18px; height: 72px; flex: none;
+      border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, transparent, rgba(13, 61, 119, .22), transparent); padding: 0 10px; }
+    .head .t { flex: 1; text-align: center; }
+    .eyebrow { color: var(--cyan); font-size: 11px; letter-spacing: .24em; margin-bottom: 3px; }
+    h1 { font-size: 34px; letter-spacing: .06em; font-weight: 800; text-shadow: 0 0 26px rgba(46, 215, 255, .3); }
+    .badges { display: flex; gap: 8px; }
+    .scope-badge { padding: 4px 11px; border: 1px solid currentColor; border-radius: 16px; font-size: 11px; white-space: nowrap; }
+    .scope-badge.verified { color: var(--green); background: rgba(49, 224, 174, .08); }
+    .scope-badge.demo { color: var(--amber); background: rgba(255, 190, 85, .08); }
+    .scope-badge.roadmap { color: var(--violet); background: rgba(138, 110, 244, .1); }
+
+    .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; height: 96px; flex: none; }
+    .kpi { display: grid; grid-template-columns: 42px 1fr; gap: 10px; align-items: center;
+      padding: 10px 12px; border: 1px solid var(--line); position: relative; overflow: hidden;
+      background: linear-gradient(145deg, var(--panel), rgba(3, 17, 38, .93)); }
+    .kpi::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(120deg, transparent 30%, rgba(46, 215, 255, .1) 50%, transparent 70%);
+      transform: translateX(-110%); }
+    .kpi.lit::after { animation: sheen 1.2s ease; }
+    @keyframes sheen { to { transform: translateX(110%); } }
+    .kpi i { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%;
+      font-style: normal; font-weight: 700; color: #eefdff;
+      background: radial-gradient(circle, #2d8eff, #164b9e 65%, rgba(42, 159, 255, .15) 67%); }
+    .kpi p { color: var(--muted); font-size: 11px; margin-bottom: 2px; }
+    .kpi strong { font-family: "Arial Narrow", Arial, sans-serif; font-size: 25px; }
+    .kpi small { display: block; color: var(--muted); font-size: 10px; }
+
+    .main { display: grid; grid-template-columns: 1.12fr 1fr 1.08fr; gap: 10px; flex: 1; min-height: 0; }
+    .col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+    .panel { border: 1px solid var(--line); padding: 12px 14px; min-height: 0;
+      background: linear-gradient(145deg, var(--panel), rgba(3, 17, 38, .93)); overflow: hidden; }
+    .kicker { color: var(--cyan); font-size: 10px; letter-spacing: .16em; margin-bottom: 4px; }
+    .ptitle { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .ptitle small { color: var(--muted); font-weight: 400; font-size: 11px; margin-left: 8px; }
+    table.t { width: 100%; border-collapse: collapse; font-size: 12px; }
+    table.t th { color: #79cfff; font-weight: 500; text-align: left; padding: 5px 8px;
+      border-bottom: 1px solid rgba(84, 147, 201, .25); white-space: nowrap; background: rgba(21, 80, 139, .26); }
+    table.t td { padding: 5px 8px; border-bottom: 1px solid rgba(84, 147, 201, .1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+    td.n, th.n { text-align: right; font-family: "Arial Narrow", Arial, sans-serif; }
+    .lbl { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+    .lbl.demo { color: #fff3df; background: rgba(255, 190, 85, .16); border: 1px solid rgba(255, 190, 85, .5); }
+    .bar-track { display: block; height: 6px; background: rgba(65, 113, 163, .18); }
+    .bar-fill { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--cyan));
+      transition: width 1.2s cubic-bezier(.2, .7, .2, 1); }
+
+    .citymini { border: 1px solid var(--line); padding: 10px 12px; flex: 1; min-height: 0; overflow: hidden;
+      background: linear-gradient(135deg, rgba(10, 43, 86, .9), rgba(4, 22, 48, .92));
+      cursor: pointer; transition: all .3s ease; position: relative;
+      display: flex; flex-direction: column; }
+    .citymini:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(46, 215, 255, .3); transform: translateY(-2px); }
+    .citymini::before { content: "点击查看详情"; position: absolute; top: 8px; right: 10px;
+      font-size: 9px; color: var(--cyan); opacity: 0; transition: opacity .3s; pointer-events: none; }
+    .citymini:hover::before { opacity: .7; }
+    .citymini h4 { font-size: 14px; margin-bottom: 4px; }
+    .citymini h4 small { color: var(--muted); font-weight: 400; font-size: 10px; margin-left: 6px; }
+    .ck { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 5px; }
+    .ck div { background: rgba(7, 30, 62, .55); padding: 4px 7px; }
+    .ck span { display: block; color: var(--muted); font-size: 10px; }
+    .ck strong { font: 15px "Arial Narrow", Arial, sans-serif; color: #dff8ff; }
+    .citymini table.t { font-size: 11px; }
+    .citymini table.t td, .citymini table.t th { padding: 3px 6px; }
+
+    #trendSvg { width: 100%; height: 100%; display: block; }
+    .trend-line { fill: none; stroke-width: 2.2; }
+    .trend-lbl { fill: var(--muted); font-size: 10px; }
+    #miniMap { width: 100%; height: 100%; display: block; }
+    .method-strip { font-size: 10.5px; line-height: 1.6; color: #8ea6c2; }
+    .mq-row .rk1 { color: #ffd76a; font-weight: 700; }
+    .mq-row .rk2 { color: #d7e1ec; font-weight: 700; }
+    .mq-row .rk3 { color: #ffab7a; font-weight: 700; }
+    .method-strip b { color: var(--cyan); }
+    .trial { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .trial input, .trial select { padding: 7px 9px; border: 1px solid var(--line); border-radius: 4px;
+      background: #071b37; color: var(--text); font-size: 12px; outline: none; }
+    .trial input { width: 150px; } .trial select { width: 130px; }
+    .trial button { padding: 7px 16px; border: none; border-radius: 4px; cursor: pointer; color: #fff;
+      font-weight: 700; background: linear-gradient(135deg, #1265d9, #1aa6dd); }
+    .trial-out { margin-top: 6px; font-size: 12.5px; color: #e7f4ff; }
+    .trial-out b { color: var(--cyan); font-family: "Arial Narrow", Arial, sans-serif; font-size: 17px; }
+    .trial-rows { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+    .trial-rows > div { display: flex; gap: 10px; align-items: baseline; font-size: 12px; }
+    .trial-rows span { color: var(--muted); font-size: 11px; flex: none; width: 82px; }
+    .trial-rows strong { color: #e7f4ff; font-weight: 600; }
+    .trial-note { margin-top: 7px; font-size: 10.5px; color: var(--muted);
+      border-top: 1px dashed rgba(84, 147, 201, .25); padding-top: 6px; }
+
+    .foot { flex: none; height: 34px; display: flex; align-items: center; gap: 14px;
+      border-top: 1px solid rgba(90, 159, 216, .25); color: var(--muted); font-size: 11px;
+      white-space: nowrap; overflow: hidden; }
+    .foot strong { color: var(--amber); }
+
+    .rv { opacity: 0; transform: translateY(22px); }
+    .rv.in { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .2, 1); }
+    @keyframes dashflow { to { stroke-dashoffset: -24; } }
+    .trend-line.flow { stroke-dasharray: 5 7; animation: dashflow 1.1s linear infinite; }
+    .pulse-dot { filter: drop-shadow(0 0 5px currentColor); }
+    @keyframes mappping {
+      0% { transform: scale(.4); opacity: .9; }
+      70% { transform: scale(2.6); opacity: 0; }
+      100% { transform: scale(2.6); opacity: 0; }
+    }
+    .map-ping { transform-box: fill-box; transform-origin: center; animation: mappping 2.6s ease-out infinite; pointer-events: none; }
+    tr.spot { transform: translateX(6px); }
+    tr.spot td:first-child { color: var(--cyan); }
+    table.t tbody tr { transition: transform .45s ease; }
+    .clock { color: var(--cyan); font-family: "Arial Narrow", Arial, sans-serif; font-size: 20px; letter-spacing: .06em; }
+    .panel { display: flex; flex-direction: column; }
+    .mq-head, .mq-row { display: grid; gap: 8px; align-items: center; }
+    .mq-head { color: #79cfff; font-size: 11px; padding: 5px 8px; border-bottom: 1px solid rgba(84, 147, 201, .25); background: rgba(21, 80, 139, .26); white-space: nowrap; }
+    .mq-row { padding: 5px 8px; border-bottom: 1px solid rgba(84, 147, 201, .1); font-size: 12px; white-space: nowrap; }
+    .mq-row span:nth-child(2), .ck .rep, .citymini td:nth-child(2) { overflow: hidden; text-overflow: ellipsis; }
+    #miniMap path { transition: fill .8s ease; }
+    #miniMap path.top-glow { filter: drop-shadow(0 0 7px rgba(46, 215, 255, .9)); }
+    .map-year { display: inline-block; margin-left: 8px; padding: 2px 12px; border: 1px solid var(--cyan);
+      border-radius: 12px; color: var(--cyan); font-size: 12px; letter-spacing: .1em;
+      background: rgba(46, 215, 255, .08); font-family: "Arial Narrow", Arial, sans-serif; }
+    .mq-row .n { text-align: right; font-family: "Arial Narrow", Arial, sans-serif; }
+    .marquee { overflow: hidden; flex: 1; min-height: 0; position: relative; }
+    .marquee::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 26px; pointer-events: none;
+      background: linear-gradient(transparent, rgba(3, 12, 28, .9)); }
+    .marquee-track { animation: scrollY linear infinite; }
+    @keyframes scrollY { to { transform: translateY(-50%); } }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    @media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; } .kpi::after { display: none; } .trend-line.flow { animation: none; } .map-ping { animation: none; } .marquee-track { animation: none; } }
+
+    /* Year Selector */
+    .year-selector { display: flex; gap: 6px; align-items: center; }
+    .year-btn { padding: 6px 14px; border: 1px solid var(--line); border-radius: 4px; background: rgba(7, 27, 55, .7);
+      color: var(--muted); cursor: pointer; font-size: 13px; font-family: "Arial Narrow", Arial, sans-serif;
+      transition: all .3s; }
+    .year-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .year-btn.active { background: linear-gradient(135deg, #1265d9, #1aa6dd); color: #fff; border-color: var(--cyan);
+      box-shadow: 0 0 15px rgba(46, 215, 255, .4); }
+
+    /* Modal */
+    .modal { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0, 0, 0, .87);
+      align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+    .modal.show { display: flex; animation: fadeIn .3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } }
+    .modal-card { width: 680px; max-height: 85vh; background: linear-gradient(145deg, #0a2b56, #031626);
+      border: 2px solid var(--cyan); border-radius: 10px; padding: 28px; overflow-y: auto;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, .7); animation: modalSlideIn .4s ease; }
+    @keyframes modalSlideIn { from { opacity: 0; transform: translateY(-30px) scale(.95); } }
+    .modal-card h3 { font-size: 22px; margin-bottom: 8px; color: var(--cyan); }
+    .modal-card .meta { color: var(--muted); font-size: 13px; margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 1px solid rgba(84, 147, 201, .2); }
+    .modal-card .field { margin-bottom: 18px; }
+    .modal-card .field label { display: block; color: var(--cyan); font-size: 12px; font-weight: 600;
+      margin-bottom: 6px; letter-spacing: .05em; }
+    .modal-card .field .value { color: #e7f4ff; line-height: 1.7; font-size: 13px; }
+    .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
+      border: 1px solid var(--line); border-radius: 50%; background: rgba(7, 27, 55, .8);
+      color: var(--muted); cursor: pointer; display: grid; place-items: center; font-size: 20px;
+      transition: all .3s; }
+    .modal-close:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(46, 215, 255, .1); }
+
+    /* Clickable Company Names */
+    .mq-row, .citymini td, #bjTop td { cursor: pointer; }
+    .mq-row:hover, .citymini tr:hover, #bjTop tr:hover { background: rgba(46, 215, 255, .1); }
+  </style>
+</head>
+<body>
+<div id="fit"><div id="stage">
+  <header class="head">
+    <div style="width:220px"><div class="clock" id="clock">--:--:--</div><div style="color:var(--muted);font-size:11px" id="dateLine"></div></div>
+    <div class="t">
+      <div class="eyebrow">TECH-BASED SME VALUATION SHOWCASE</div>
+      <h1>科技型中小企业估值成果展示</h1>
+    </div>
+    <div class="badges" style="width:220px;flex-wrap:wrap;justify-content:flex-end">
+      <span class="scope-badge verified">已验证·命中率65.7%</span>
+      <span class="scope-badge demo">实时数据·智能估值</span>
+    </div>
+  </header>
+
+  <!-- Modal for Company Details -->
+  <div class="modal" id="modal">
+    <div class="modal-card" style="position:relative">
+      <div class="modal-close" onclick="document.getElementById('modal').classList.remove('show')">×</div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <section class="kpis" id="kpiRow"></section>
+
+  <div class="main">
+    <div class="col" id="cityCol"></div>
+    <div class="col">
+      <div class="panel rv" style="flex:1">
+        <div class="kicker" id="bjDistKicker">BEIJING DISTRICTS · 北京分区潜力（2024在库）</div>
+        <div class="ptitle">分区潜力 <small>潜力企业估值≥1亿</small></div>
+        <div style="flex:none;display:grid;grid-template-columns:1.12fr 1fr;gap:12px;align-items:stretch">
+          <div style="min-width:0;border:1px solid rgba(84,147,201,.18);background:rgba(7,30,62,.55);padding:8px 10px"><div id="bjDist"></div></div>
+          <div style="min-width:0;display:flex;flex-direction:column;border:1px solid rgba(84,147,201,.18);background:rgba(7,30,62,.55);padding:8px 10px">
+            <div class="kicker">BEIJING MAP · 分区潜力着色 <span class="map-year" id="mapYear">2024</span></div>
+            <div style="flex:1;min-height:0"><svg id="miniMap" viewBox="0 0 560 250" preserveAspectRatio="xMidYMid meet"></svg></div>
+          </div>
+        </div>
+        <div style="height:1px;background:rgba(84,147,201,.25);margin:10px 0"></div>
+        <div class="kicker">BEIJING LEADERS · 北京头部企业</div>
+        <div class="ptitle">头部企业 <small>按估值排序</small></div>
+        <div id="bjTop" style="flex:1;min-height:0;display:flex;flex-direction:column"></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel rv" style="flex:1">
+        <div class="kicker">YEARLY STOCK · 六城年度在库趋势</div>
+        <svg id="trendSvg" viewBox="0 0 560 210" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="panel rv method-strip" style="flex:.35" id="methodStrip"></div>
+      <div class="panel rv" style="flex:1.05">
+        <div class="kicker">LIVE TRY · 一键试算<span style="color:var(--muted);letter-spacing:0;margin-left:8px">演示口径 · 多因子简版</span></div>
+        <div class="trial">
+          <input id="q_name" placeholder="企业名称">
+          <select id="q_ind"><option>电子信息与半导体</option><option>软件与IT服务</option><option>机械设备</option><option>材料与化工</option><option>医药医疗</option><option>消费与其它</option></select>
+          <input id="q_rev" type="number" placeholder="年收入（万元）*" style="width:120px">
+          <select id="q_city" style="width:104px"><option>北京市</option><option>上海市</option><option>深圳市</option><option>广州市</option><option>南京市</option><option>杭州市</option></select>
+          <input id="q_yrs" type="number" min="0" max="8" placeholder="入库年限" style="width:88px">
+          <input id="q_pat" type="number" min="0" placeholder="专利数" style="width:80px">
+          <button id="q_go" type="button">测算</button>
+        </div>
+        <div class="trial-out" id="q_out">填写收入、年限、专利并点击「测算」，按多因子简版方法演示。</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot" id="footLine"></footer>
+</div></div>
+
+<script src="src/assets/maps.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtN = n => new Intl.NumberFormat("zh-CN").format(n || 0);
+const fmtY = w => { if (!(w > 0)) return "—"; if (w >= 1e8) return (w / 1e8).toFixed(2).replace(/\.00$/, "") + "亿"; if (w >= 1e4) return Math.round(w / 1e4) + "万"; return Math.round(w) + "元"; };
+const CITY_COLORS = { "北京市": "#2ed7ff", "上海市": "#3988ff", "深圳市": "#31e0ae", "广州市": "#ffbe55", "南京市": "#b6a5ff", "杭州市": "#ff718a" };
+const SECTOR_MULT = { "软件与IT服务": 9, "电子信息与半导体": 12, "机械设备": 6, "材料与化工": 5, "医药医疗": 10, "消费与其它": 4 };
+
+function fit() {
+  const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  const fit = $("#fit"), stage = $("#stage");
+  fit.style.width = 1920 * s + "px"; fit.style.height = 1080 * s + "px";
+  stage.style.transform = `scale(${s})`; stage.style.transformOrigin = "top left";
+}
+window.addEventListener("resize", fit);
+
+function countUp(el, target, money) {
+  const t0 = performance.now(), dur = 1200;
+  (function fr(t) {
+    const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = money ? fmtY(Math.round(target * e)) : fmtN(Math.round(target * e));
+    if (p < 1) requestAnimationFrame(fr);
+  })(t0);
+}
+
+  const RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let DATA = null;
+  function marquee(rowsHtml, cols, speed) {
+    return `<div class="mq-head" style="grid-template-columns:${cols}">${["#", "企业", "估值"].map(h => `<span>${h}</span>`).join("")}</div>
+    <div class="marquee"><div class="marquee-track" data-speed="${speed}">${rowsHtml}${rowsHtml}</div></div>`;
+  }
+  function mqRow(r, i, cols) {
+    return `<div class="mq-row" style="grid-template-columns:${cols}"><span class="n">${i + 1}</span><span>${esc(r.name)}</span><span class="n">${fmtY(r.est)}</span></div>`;
+  }
+function boot(D) {
+  DATA = D;
+  const bj = D.cities.find(c => c.name === "北京市");
+  const kpis = [
+    ["京", "北京累计入库", bj.total_unique, "家", "2017–2024去重", "kpiTotal"],
+    ["库", "北京2024在库", bj.yearly["2024"], "家", "当年在库·含延续", "kpiStock"],
+    ["潜", "北京潜力估计", bj.hp2024, "家", "2024在库中估计值≥1亿", "kpiHp"],
+    ["区", "覆盖行政区", bj.districts.length, "个", "2024年在库分区", "kpiDist"],
+    ["证", "样本外命中率", "65.7%", null, "NEEQ回测·0.5×–2×", "kpiHit"],
+    ["档", "信息档位", "P0–P4", null, "由少到多渐进输入", "kpiTier"]
+  ];
+  $("#kpiRow").innerHTML = kpis.map(([ic, lab, v, u, sub, id]) =>
+    `<div class="kpi rv" id="${id}"><i>${ic}</i><div><p class="kpi-lab">${lab}</p><strong class="kv" data-v="${typeof v === "number" ? v : ""}">${typeof v === "number" ? "0" : esc(v)}</strong>${u ? `<small>${esc(u)}</small>` : ""}<small class="kpi-sub">${esc(sub)}</small></div></div>`).join("");
+
+  function updateKpis(year) {
+    const stock = bj.yearly[String(year)] || 0;
+    const hp = (D.beijing_year_hp[String(year)] || { hp_total: 0 }).hp_total || 0;
+    const stockKv = document.querySelector("#kpiStock .kv");
+    const hpKv = document.querySelector("#kpiHp .kv");
+    if (stockKv) countUp(stockKv, stock, false);
+    if (hpKv) countUp(hpKv, hp, false);
+    const stockLab = document.querySelector("#kpiStock .kpi-lab");
+    const hpSub = document.querySelector("#kpiHp .kpi-sub");
+    if (stockLab) stockLab.textContent = `北京${year}在库`;
+    if (hpSub) hpSub.textContent = `${year}在库中估计值≥1亿`;
+  }
+
+  function updateCityCards(year) {
+    document.querySelectorAll("#cityCol .citymini").forEach(card => {
+      const c = D.cities.find(x => x.name === card.dataset.city);
+      if (!c) return;
+      const sm = card.querySelector("h4 small");
+      if (sm) sm.textContent = `累计${fmtN(c.total_unique)} · 在库${fmtN(c.yearly[String(year)] || 0)} · 潜力${fmtN(c.hp2024)}`;
+    });
+  }
+
+  const ds = bj.districts.slice(0, 8), mx = Math.max(1, ...ds.map(d => d.hp2024));
+
+  // Function to update Beijing district table by year
+  function updateBjDistrictTable(year) {
+    const hpData = D.beijing_year_hp[String(year)] || { by_district: {}, hp_total: 0 };
+    const distData = hpData.by_district || {};
+    const distEntries = Object.entries(distData)
+      .map(([n, v]) => [n === "行政区待补" ? "其他" : n, v])
+      .sort((a, b) => ((a[0] === "其他") - (b[0] === "其他")) || (b[1] - a[1]))
+      .slice(0, 8);
+    const distMax = Math.max(1, ...distEntries.map(e => e[1]));
+
+    $("#bjDist").innerHTML = `<table class="t"><thead><tr><th>行政区</th><th class="n">${year}在库</th><th class="n">潜力</th><th style="width:32%">占比</th></tr></thead><tbody>` +
+      distEntries.map(([name, hp]) => {
+        const pct = Math.round(hp / distMax * 100);
+        return `<tr><td>${esc(name)}</td><td class="n">—</td><td class="n">${fmtN(hp)}</td><td><span class="bar-track"><span class="bar-fill" style="width:${pct}%;transition:width 0.6s"></span></span></td></tr>`;
+      }).join("") + `</tbody></table>`;
+
+    $("#bjDistKicker").textContent = `BEIJING DISTRICTS · 北京分区潜力（${year}在库）`;
+  }
+
+  updateBjDistrictTable(2024);
+  $("#bjTop").innerHTML = marquee(
+    D.beijing_top.slice(0, 30).map((r, i) => `<div class="mq-row" style="grid-template-columns:30px 1fr 86px"><span class="n rk${i + 1}">${i + 1}</span><span>${esc(r.name)}</span><span class="n">${fmtY(r.est)}</span></div>`).join(""),
+    "30px 1fr 86px", 34);
+
+  $("#cityCol").innerHTML = D.cities.filter(c => c.name !== "北京市").map(c =>
+    `<div class="citymini rv" data-city="${esc(c.name)}">
+      <div class="city-header" style="cursor:pointer">
+        <h4>${esc(c.name)}<small>累计${fmtN(c.total_unique)} · 在库${fmtN(c.yearly["2024"])} · 潜力${fmtN(c.hp2024)}</small></h4>
+        <div class="ck"><div><span>中位估值</span><strong>${fmtY(c.median_est)}</strong></div><div><span>潜力占比</span><strong>${(c.hp_share * 100).toFixed(0)}%</strong></div><div><span>代表·1</span><strong class="rep" style="font-size:12px">${esc(c.top[0].name.slice(0, 9))}</strong></div><div><span>估值</span><strong>${fmtY(c.top[0].est)}</strong></div></div>
+      </div>
+      ${marquee(c.top.slice(1, 13).map((r, i) => `<div class="mq-row" style="grid-template-columns:30px 1fr 86px"><span class="n">${i + 2}</span><span>${esc(r.name)}</span><span class="n">${fmtY(r.est)}</span></div>`).join(""), "30px 1fr 86px", 30)}
+    </div>`).join("");
+
+  // City Detail Modal (delegated click - see document handler below)
+  window.__curYear = 2024;
+  function showCityModal(cityName) {
+    const c = (DATA.cities || []).find(x => x.name === cityName);
+    if (!c) return;
+    const y = window.__curYear || 2024;
+    const tops = Array.isArray(c.top) ? c.top.slice(0, 10) : [];
+    const dists = Array.isArray(c.districts) ? c.districts.slice(0, 5) : [];
+    const html = `
+      <h3>${esc(c.name)}</h3>
+      <div class="meta">累计${fmtN(c.total_unique)}家 · ${y}年在库${fmtN(c.yearly ? c.yearly[String(y)] : 0)}家 · 潜力${fmtN(c.hp2024)}家</div>
+      <div class="field">
+        <label>📊 总体规模</label>
+        <div class="value">累计入库 ${fmtN(c.total_unique)} 家　${y}年在库 ${fmtN(c.yearly ? c.yearly[String(y)] : 0)} 家　潜力 ${fmtN(c.hp2024)} 家</div>
+      </div>
+      <div class="field">
+        <label>💰 估值分布</label>
+        <div class="value">中位估值 ${fmtY(c.median_est)}　潜力占比 ${c.hp_share ? (c.hp_share * 100).toFixed(1) + "%" : "—"}</div>
+      </div>
+      <div class="field">
+        <label>🏆 TOP10企业</label>
+        <div class="value">${tops.map((r, i) => `${i + 1}. ${esc(r.name)}（${esc(r.district || "")}${r.industry ? " · " + esc(r.industry) : ""}）估值 ${fmtY(r.est)}`).join("<br>") || "暂无"}</div>
+      </div>
+      <div class="field">
+        <label>📍 主要行政区</label>
+        <div class="value">${dists.map((d, i) => `${i + 1}. ${esc(d.name)}：在库 ${fmtN(d.count2024 ?? d.count ?? 0)} 家，潜力 ${fmtN(d.hp2024 ?? d.hp ?? 0)} 家`).join("<br>") || "暂无"}</div>
+      </div>
+    `;
+    $("#modalContent").innerHTML = html;
+    $("#modal").classList.add("show");
+  }
+
+  // Histogram with auto-animation (start from 2018 since 2017 has low data)
+  const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
+  let currentYearIdx = years.length - 1; // Start at 2024
+
+  function drawHistogram(yearIdx) {
+    const year = years[yearIdx];
+    const W = 560, H = 210, L = 50, R = 10, T = 54, B = 50;
+    const barW = (W - L - R) / D.cities.length - 8;
+    const max = Math.max(1, ...D.cities.map(c => c.yearly[String(year)] || 0));
+    const Y = v => H - B - (v / max) * (H - T - B);
+
+    let s = `<text x="${W/2}" y="20" text-anchor="middle" fill="var(--cyan)" font-size="14" font-weight="700">${year}年度在库企业数</text>`;
+    s += `<line x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}" stroke="rgba(121,180,226,.3)" stroke-width="1"/>`;
+
+    D.cities.forEach((c, i) => {
+      const val = c.yearly[String(year)] || 0;
+      const x = L + i * ((W - L - R) / D.cities.length);
+      const barH = H - B - Y(val);
+      const aboveY = Y(val) - 8;
+      const inside = aboveY < 30;
+      const lblY = inside ? Y(val) + 16 : aboveY;
+      const lblFill = inside ? "#ffffff" : "var(--cyan)";
+
+      s += `<rect x="${x}" y="${Y(val)}" width="${barW}" height="${Math.max(1, barH)}" fill="${CITY_COLORS[c.name]}" opacity="0.85">
+        <animate attributeName="height" from="0" to="${Math.max(1, barH)}" dur="0.8s" fill="freeze"/>
+        <animate attributeName="y" from="${H-B}" to="${Y(val)}" dur="0.8s" fill="freeze"/>
+      </rect>`;
+      s += `<text x="${x + barW/2}" y="${lblY}" text-anchor="middle" fill="${lblFill}" font-size="13" font-family="Arial">${fmtN(val)}</text>`;
+      s += `<text x="${x + barW/2}" y="${H-B+18}" text-anchor="middle" fill="var(--text)" font-size="11">${c.name.replace('市','')}</text>`;
+    });
+
+    $("#trendSvg").innerHTML = s;
+  }
+
+  drawHistogram(currentYearIdx);
+
+  const geo = (window.DASHBOARD_MAPS || {})["北京市"];
+  window.__mapPaths = [];
+  if (geo) {
+    const MW = 560, MH = 250;
+    const pts = geo.features.flatMap(f => (f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates).flatMap(p => p.flatMap(r => r)));
+    const mLat = pts.reduce((a, p) => a + p[1], 0) / pts.length, cos = Math.cos(mLat * Math.PI / 180);
+    const xs = pts.map(p => p[0] * cos), ys = pts.map(p => p[1]);
+    const bx = [Math.min(...xs), Math.max(...xs)], byy = [Math.min(...ys), Math.max(...ys)];
+    const sc = Math.min((MW - 24) / (bx[1] - bx[0]), (MH - 24) / (byy[1] - byy[0]));
+    const pj = p => [12 + (p[0] * cos - bx[0]) * sc, MH - 12 - (p[1] - byy[0]) * sc];
+    const path = g => (g.type === "Polygon" ? [g.coordinates] : g.coordinates).map(poly => poly.map(ring => ring.map((p, i) => `${i ? "L" : "M"}${pj(p).map(v => v.toFixed(1)).join(",")}`).join(" ") + " Z").join(" ")).join(" ");
+    $("#miniMap").innerHTML = geo.features.map(f =>
+      `<path d="${path(f.geometry)}" data-district="${esc(f.properties.name)}" fill="#0d2a52" stroke="#9ce2ff" stroke-width="1"><title>${esc(f.properties.name)}</title></path>`).join("");
+    window.__mapPaths = [...document.querySelectorAll("#miniMap path")];
+    (function tightenMap() {
+      const all = [];
+      geo.features.forEach(f => (f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates)
+        .forEach(poly => poly.forEach(ring => ring.forEach(p => all.push(pj(p))))));
+      const x0 = Math.min(...all.map(p => p[0])), x1 = Math.max(...all.map(p => p[0]));
+      const y0 = Math.min(...all.map(p => p[1])), y1 = Math.max(...all.map(p => p[1]));
+      const pad = 10;
+      $("#miniMap").setAttribute("viewBox", `${(x0 - pad).toFixed(1)} ${(y0 - pad).toFixed(1)} ${(x1 - x0 + pad * 2).toFixed(1)} ${(y1 - y0 + pad * 2).toFixed(1)}`);
+    })();
+    const paintYear = y => {
+      const yd = (DATA.beijing_year_hp[String(y)] || { by_district: {}, hp_total: 0 });
+      const vals = Object.values(yd.by_district), mx = Math.max(1, ...vals);
+      let top = null, topV = -1;
+      window.__mapPaths.forEach(p => {
+        const v = yd.by_district[p.dataset.district] || 0;
+        const t = Math.sqrt(v / mx), a = [13, 42, 82], b = [25, 215, 247];
+        p.setAttribute("fill", `rgb(${a.map((c, i) => Math.round(c + (b[i] - c) * t)).join(",")})`);
+        p.querySelector("title").textContent = `${p.dataset.district}：${y}年潜力 ${fmtN(v)} 家`;
+        p.classList.toggle("top-glow", false);
+        if (v > topV) { topV = v; top = p; }
+      });
+      if (top) top.classList.add("top-glow");
+      const badge = $("#mapYear"); if (badge) badge.textContent = y;
+    };
+    window.__paintYear = paintYear;
+    paintYear(2024);
+  }
+
+  $("#methodStrip").innerHTML = `<b>估值模型：</b>行业基准×区位系数×年限因子×连续性×专利加成，分位对齐NEEQ市场分布，潜力企业指系统估值≥1亿元。<b>验证结果：</b>R模型样本外命中率65.7%（143个验证事件）。<b>技术架构：</b>Qwen3.5-9B微调引擎 + 多因子量化模型。`;
+
+  $("#footLine").innerHTML = `<span><strong>数据来源：</strong>六城科技型中小企业名单、工商注册信息、专利数据、NEEQ披露。在库企业=当年在库（含延续）。潜力企业=估值≥1亿元。</span><span style="margin-left:auto">更新时间 ${esc(D.meta.generated_at)} · 智能估值系统</span>`;
+
+  const LOC_DEMO = { "北京市": 1.00, "上海市": 1.02, "深圳市": 1.05, "广州市": 0.95, "南京市": 0.92, "杭州市": 0.98 };
+  const rMoney = v => v >= 1e8 ? (Math.round(v / 1e7) / 10).toFixed(1) + "亿" : fmtY(Math.round(v));
+  $("#q_go").addEventListener("click", () => {
+    const nm = $("#q_name").value.trim(), ind = $("#q_ind").value, rv = parseFloat($("#q_rev").value);
+    const city = $("#q_city").value;
+    let yrs = parseInt($("#q_yrs").value, 10); if (!Number.isFinite(yrs) || yrs < 0) yrs = 0; yrs = Math.min(8, yrs);
+    let pat = parseInt($("#q_pat").value, 10); if (!Number.isFinite(pat) || pat < 0) pat = 0; pat = Math.min(200, pat);
+    const mult = SECTOR_MULT[ind] || 7;
+    if (!(Number.isFinite(rv) && rv > 0)) {
+      $("#q_out").innerHTML = `<span style="color:var(--amber)">请输入年收入（万元）：无规模锚，无法测算，不编造数字。</span>`;
+      return;
+    }
+    const loc = LOC_DEMO[city] ?? 1, yf = 1 + 0.02 * yrs, pf = 1 + Math.min(pat, 100) * 0.002;
+    const base = rv * 1e4 * mult, val = base * loc * yf * pf;
+    $("#q_out").innerHTML =
+      `<div class="trial-rows">` +
+      `<div><span>测算对象</span><strong>${esc(nm || "未具名企业")} · ${esc(ind)} · 年收入 ${fmtN(rv)} 万元</strong></div>` +
+      `<div><span>规模基准</span><strong>年收入 × ${mult} ≈ ${rMoney(base)}</strong></div>` +
+      `<div><span>区位系数</span><strong>${esc(city)} × ${loc.toFixed(2)}（演示）</strong></div>` +
+      `<div><span>年限因子</span><strong>× ${yf.toFixed(2)}（入库${yrs}年）</strong></div>` +
+      `<div><span>专利加成</span><strong>× ${pf.toFixed(3)}（${pat}项）</strong></div>` +
+      `<div><span>综合估值</span><strong><b>${rMoney(val)}</b></strong></div>` +
+      `<div><span>演示区间</span><strong>${rMoney(val * .62)} – ${rMoney(val * 1.6)}（0.62×–1.6×）</strong></div>` +
+      `</div><div class="trial-note">各系数均为演示口径，仅示意多因子方法逻辑，不构成估值意见。</div>`;
+  });
+
+  fit();
+  document.querySelectorAll(".marquee-track").forEach(t => {
+    if (RM) { t.style.animation = "none"; return; }
+    const half = t.scrollHeight / 2;
+    t.style.animationDuration = Math.max(8, half / (parseFloat(t.dataset.speed) || 32)) + "s";
+  });
+  if (!RM) {
+    setTimeout(() => document.querySelectorAll(".trend-line.draw").forEach(p => p.classList.add("flow")), 2400);
+    document.querySelectorAll(".kpi").forEach(k => k.classList.add("lit"));
+    const hp = [...document.querySelectorAll("#miniMap path")].find(p => (p.querySelector("title") || {}).textContent?.startsWith("海淀区"));
+    if (hp) {
+      const b = hp.getBBox(), NS = "http://www.w3.org/2000/svg";
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", b.x + b.width / 2); c.setAttribute("cy", b.y + b.height / 2);
+      c.setAttribute("r", 10); c.setAttribute("fill", "none");
+      c.setAttribute("stroke", "#2ed7ff"); c.setAttribute("stroke-width", "2");
+      c.setAttribute("class", "map-ping");
+      hp.parentNode.appendChild(c);
+    }
+    setInterval(() => document.querySelectorAll(".kpi").forEach(k => {
+      k.classList.remove("lit"); void k.offsetWidth; k.classList.add("lit");
+    }), 9000);
+  }
+  const tick = () => {
+    const d = new Date(), p = n => String(n).padStart(2, "0");
+    const c = $("#clock"); if (c) c.textContent = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+    const dl = $("#dateLine"); if (dl) dl.textContent = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} 星期${"日一二三四五六"[d.getDay()]}`;
+  };
+  tick(); setInterval(tick, 1000);
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("in");
+    e.target.querySelectorAll(".bar-fill").forEach(b => b.style.width = b.dataset.w + "%");
+    io.unobserve(e.target);
+  }), { threshold: .1 });
+  document.querySelectorAll(".rv").forEach((el, i) => { el.style.transitionDelay = (i % 4 * 70) + "ms"; io.observe(el); });
+  document.querySelectorAll("#kpiRow .kv").forEach(el => {
+    const v = el.dataset.v; if (v === "") return;
+    const t0 = performance.now();
+    (function fr(t) {
+      const p = Math.min(1, (t - t0) / 1400), e = 1 - Math.pow(1 - p, 3), n = Math.round(Number(v) * e);
+      el.textContent = fmtN(n);
+      if (p < 1) requestAnimationFrame(fr);
+    })(t0);
+  });
+  document.querySelectorAll(".draw").forEach(p => {
+    p.style.transition = "stroke-dashoffset 1.8s ease .3s"; p.style.strokeDashoffset = 0;
+  });
+
+  // Company Detail Modal
+  const COMPANY_DB = {};
+  D.beijing_top.forEach(c => { COMPANY_DB[c.name] = c; });
+  D.cities.forEach(city => {
+    city.top.forEach(c => { COMPANY_DB[c.name] = { ...c, city: city.name }; });
+  });
+
+  function showCompanyModal(companyName) {
+    const info = COMPANY_DB[companyName];
+    if (!info) {
+      alert("企业信息加载中...");
+      return;
+    }
+    const html = `
+      <h3>${esc(info.name)}</h3>
+      <div class="meta">${esc(info.district || info.city || "")} · ${esc(info.industry)} · 入库${info.years}年</div>
+      <div class="field">
+        <label>📊 估值信息</label>
+        <div class="value">系统估值：<strong style="color:var(--cyan);font-size:20px;font-family:'Arial Narrow',Arial">${fmtY(info.est)}</strong></div>
+      </div>
+      <div class="field">
+        <label>🏢 企业概况</label>
+        <div class="value">${esc(info.description || "暂无详细介绍")}</div>
+      </div>
+      <div class="field">
+        <label>💼 主营业务</label>
+        <div class="value">${esc(info.business || "信息待完善")}</div>
+      </div>
+      <div class="field">
+        <label>🎯 估值分析</label>
+        <div class="value">${esc(info.analysis || "基于行业特征、区位优势、入库年限等多因子综合评估")}</div>
+      </div>
+    `;
+    $("#modalContent").innerHTML = html;
+    $("#modal").classList.add("show");
+  }
+
+  // Delegated clicks: company rows -> company modal, city headers -> city modal
+  document.addEventListener("click", e => {
+    const row = e.target.closest(".mq-row, #bjTop tbody tr, .citymini tr");
+    if (row) {
+      e.stopPropagation();
+      const nameEl = row.querySelector("span:nth-child(2), td:nth-child(2)");
+      if (nameEl) showCompanyModal(nameEl.textContent.trim());
+      return;
+    }
+    const chead = e.target.closest(".city-header");
+    if (chead) {
+      e.stopPropagation();
+      const card = chead.closest(".citymini");
+      if (card && card.dataset.city) showCityModal(card.dataset.city);
+    }
+  });
+
+  // Close modal on click outside
+  $("#modal").addEventListener("click", e => {
+    if (e.target === $("#modal")) {
+      $("#modal").classList.remove("show");
+    }
+  });
+
+  // Unified yearly auto-cycle: KPIs + districts + histogram + map + city cards stay in sync
+  function tickYear(year) {
+    window.__curYear = year;
+    updateBjDistrictTable(year);
+    updateKpis(year);
+    updateCityCards(year);
+    if (window.__paintYear) window.__paintYear(year);
+    const yi = years.indexOf(year);
+    if (yi >= 0) drawHistogram(yi);
+  }
+  if (!RM) {
+    setInterval(() => {
+      currentYearIdx = (currentYearIdx + 1) % years.length;
+      tickYear(years[currentYearIdx]);
+    }, 2500);
+  }
+}
+fetch("src/showcase-data.json", { cache: "no-store" }).then(r => r.json()).then(boot);
+</script>
+</body>
+</html>
