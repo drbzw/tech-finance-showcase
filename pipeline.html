@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="EcvybuxlDnJDcgH4IddKwW">
+<head data-page-node-id="5PdG4w5DfyZxyd6sztcmuw">
+<meta charset="UTF-8" data-page-node-id="4qQy2KVOLPBPnnlksN3dMK">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="90wghsIvKUwERuRzlmCwAF">
+<title>企业估值神经网络训练技术路线</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; background:#02081a; overflow:hidden;
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",sans-serif; color:#cfe8ff; }
+
+  /* ===== 背景 ===== */
+  .bg { position:fixed; inset:0; z-index:0;
+    background:
+      radial-gradient(1200px 500px at 50% -10%, rgba(20,90,180,.35), transparent 60%),
+      radial-gradient(900px 500px at 50% 115%, rgba(10,60,140,.30), transparent 60%),
+      linear-gradient(180deg,#03102a 0%, #02081a 55%, #030c22 100%);
+  }
+  .bg::before { content:""; position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(60,150,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(60,150,255,.05) 1px, transparent 1px);
+    background-size:44px 44px;
+    mask-image:radial-gradient(ellipse at 50% 45%, #000 30%, transparent 78%);
+  }
+  .orb { position:absolute; border-radius:50%; filter:blur(70px); opacity:.35;
+    animation:orbFloat 12s ease-in-out infinite alternate; }
+  .orb.o1 { width:420px; height:420px; left:-120px; top:8%; background:#0a4d9e; }
+  .orb.o2 { width:380px; height:380px; right:-100px; bottom:4%; background:#083a7d; animation-delay:-6s; }
+  @keyframes orbFloat { from{ transform:translateY(-24px);} to{ transform:translateY(24px);} }
+
+  /* ===== 舞台（固定 1600x900，等比缩放适配） ===== */
+  .stage { position:absolute; left:50%; top:50%; width:1600px; height:900px;
+    transform:translate(-50%,-50%); z-index:1; padding:14px 20px 12px;
+    display:flex; flex-direction:column; }
+
+  /* ===== 页眉 ===== */
+  header { display:flex; align-items:flex-start; justify-content:space-between; min-height:86px; flex:none; }
+  .h-left { width:330px; }
+  .clock { font-size:30px; font-weight:700; color:#7fd4ff; letter-spacing:2px;
+    text-shadow:0 0 14px rgba(60,180,255,.6); font-family:"Consolas","Microsoft YaHei",monospace; }
+  .date-line { font-size:13px; color:#6f93bb; margin-top:2px; letter-spacing:1px; }
+  .h-tags { margin-top:8px; display:flex; gap:8px; }
+  .chip { font-size:12.5px; color:#8fd0ff; border:1px solid rgba(90,180,255,.45);
+    padding:4px 12px; border-radius:3px; background:rgba(30,90,170,.25); letter-spacing:1px; }
+
+  .h-center { flex:1; text-align:center; position:relative; padding-top:2px; }
+  .h-title { font-size:38px; font-weight:800; letter-spacing:6px;
+    background:linear-gradient(180deg,#eaf7ff 20%, #79c8ff 80%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 30px rgba(70,170,255,.35); position:relative; display:inline-block; }
+  .h-title::before,.h-title::after { content:"◆"; position:absolute; top:50%;
+    transform:translateY(-50%); font-size:12px; color:#3fa9f5; -webkit-text-fill-color:#3fa9f5; }
+  .h-title::before { left:-34px; } .h-title::after { right:-34px; }
+  .h-sub { font-size:13px; letter-spacing:6px; color:#5f8fc4; margin-top:5px; }
+  .h-deco { width:520px; height:14px; margin:6px auto 0; position:relative; }
+  .h-deco::before { content:""; position:absolute; left:0; right:0; top:6px; height:1px;
+    background:linear-gradient(90deg,transparent,#2f8fe0 18%,#7fd4ff 50%,#2f8fe0 82%,transparent); }
+  .h-deco::after { content:""; position:absolute; left:50%; top:2px; width:10px; height:10px;
+    transform:translateX(-50%) rotate(45deg); background:#04122b; border:1px solid #6fc6ff;
+    box-shadow:0 0 10px rgba(110,200,255,.8); animation:decoPulse 2.4s ease-in-out infinite; }
+  @keyframes decoPulse { 0%,100%{ box-shadow:0 0 6px rgba(110,200,255,.5);} 50%{ box-shadow:0 0 16px rgba(110,200,255,1);} }
+
+  .h-right { width:330px; text-align:right; }
+  .h-formula { font-size:11.5px; color:#7fa6d4; letter-spacing:1px; white-space:nowrap; }
+  .h-slogan { margin-top:6px; font-size:13.5px; font-weight:700; color:#9fd8ff; letter-spacing:3px; line-height:1.4; }
+
+  /* ===== 主流水线 ===== */
+  .pipeline { flex:1; display:flex; align-items:stretch; gap:0; margin-top:6px; min-height:0; }
+  .panel { flex:0 0 284px; position:relative; border:1px solid rgba(74,165,245,.30);
+    border-radius:6px; padding:10px 12px; display:flex; flex-direction:column;
+    background:linear-gradient(165deg, rgba(16,46,92,.55), rgba(5,16,38,.78) 60%);
+    box-shadow:inset 0 0 26px rgba(30,110,210,.12), 0 0 18px rgba(10,60,130,.18);
+    opacity:0; transform:translateY(16px); animation:panelIn .7s ease forwards; }
+  .panel:nth-child(1){animation-delay:.05s} .panel:nth-child(3){animation-delay:.18s}
+  .panel:nth-child(5){animation-delay:.31s} .panel:nth-child(7){animation-delay:.44s}
+  .panel:nth-child(9){animation-delay:.57s}
+  @keyframes panelIn { to{ opacity:1; transform:translateY(0);} }
+  .panel::before,.panel::after { content:""; position:absolute; width:14px; height:14px; }
+  .panel::before { left:-1px; top:-1px; border-left:2px solid #5cc0ff; border-top:2px solid #5cc0ff; }
+  .panel::after { right:-1px; bottom:-1px; border-right:2px solid #5cc0ff; border-bottom:2px solid #5cc0ff; }
+
+  .p-head { display:flex; align-items:center; gap:8px; padding-bottom:8px;
+    border-bottom:1px solid rgba(80,160,240,.22); margin-bottom:8px; }
+  .p-num { font-size:26px; font-weight:900; font-style:italic; color:#3fb2ff;
+    text-shadow:0 0 12px rgba(63,178,255,.7); font-family:"Arial Black",sans-serif; }
+  .p-title { font-size:17px; font-weight:700; color:#e8f5ff; letter-spacing:1px; }
+  .p-sub { font-size:11.5px; color:#6f96c4; margin-top:2px; letter-spacing:.5px; }
+
+  /* ===== 面板间箭头（流光动效） ===== */
+  .flow-arrow { flex:1; display:flex; align-items:center; justify-content:center; position:relative; min-width:34px; }
+  .flow-arrow .chev { font-size:30px; font-weight:900; font-family:Arial;
+    background:linear-gradient(90deg, rgba(70,170,255,.15) 0%, #8fe0ff 45%, #fff 50%, #8fe0ff 55%, rgba(70,170,255,.15) 100%);
+    background-size:250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 0 8px rgba(90,190,255,.85));
+    animation:arrowSweep 1.8s linear infinite; }
+  @keyframes arrowSweep { from{ background-position:120% 0;} to{ background-position:-130% 0;} }
+  .flow-arrow .beam { position:absolute; left:8%; right:8%; top:50%; height:2px; transform:translateY(-50%);
+    background:linear-gradient(90deg, transparent, rgba(90,190,255,.55), transparent);
+    overflow:visible; }
+  .flow-arrow .beam::after { content:""; position:absolute; top:-2px; left:0; width:26px; height:6px;
+    border-radius:3px; background:radial-gradient(closest-side, #dff4ff, rgba(120,210,255,.0));
+    animation:beamRun 1.8s linear infinite; }
+  @keyframes beamRun { from{ left:-12%; opacity:0;} 15%{opacity:1;} 85%{opacity:1;} to{ left:100%; opacity:0;} }
+
+  /* ===== P1 数据输入 ===== */
+  .d-item { display:flex; gap:9px; align-items:center; padding:7px 8px; margin-bottom:6px; flex:1;
+    border:1px solid rgba(70,150,235,.22); border-radius:4px;
+    background:linear-gradient(90deg, rgba(20,60,120,.35), rgba(10,30,66,.25));
+    transition:border-color .3s; }
+  .d-item:hover { border-color:rgba(120,210,255,.6); }
+  .d-icon { flex:0 0 38px; height:38px; display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(90,180,255,.4); border-radius:4px; background:rgba(30,90,170,.3);
+    color:#8fd4ff; font-size:18px; }
+  .d-info { flex:1; min-width:0; }
+  .d-name { font-size:13.5px; font-weight:700; color:#dcefff; }
+  .d-desc { font-size:10.5px; color:#6a8fb8; margin-top:2px; line-height:1.4; }
+  .d-val { text-align:right; }
+  .d-num { font-size:17px; font-weight:800; color:#5cc8ff; font-family:Consolas,monospace;
+    text-shadow:0 0 8px rgba(80,190,255,.5); }
+  .d-unit { font-size:10px; color:#7fa4cf; margin-left:2px; }
+  .mini-chart { width:52px; height:26px; margin-top:2px; }
+  .p-foot { margin-top:auto; text-align:center; font-size:11.5px; color:#6f96c4; letter-spacing:2px;
+    padding-top:7px; border-top:1px dashed rgba(90,160,240,.25); }
+
+  /* ===== P2 画像生成 ===== */
+  .hex-wrap { display:flex; flex-direction:column; align-items:center; padding:6px 0 10px; position:relative; }
+  .hex { width:120px; height:104px; position:relative; display:flex; align-items:center; justify-content:center; }
+  .hex svg.ring { position:absolute; inset:0; animation:spinSlow 14s linear infinite; }
+  .hex svg.ring2 { position:absolute; inset:10px; animation:spinSlow 9s linear infinite reverse; }
+  @keyframes spinSlow { to{ transform:rotate(360deg);} }
+  .hex-core { width:64px; height:64px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, rgba(120,220,255,.85), rgba(20,90,180,.9) 70%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 26px rgba(90,200,255,.75); animation:coreBreath 2.6s ease-in-out infinite; }
+  @keyframes coreBreath { 0%,100%{ box-shadow:0 0 16px rgba(90,200,255,.5);} 50%{ box-shadow:0 0 34px rgba(120,220,255,.95);} }
+  .hex-label { margin-top:8px; text-align:center; font-size:15px; font-weight:700; color:#cfeeff; line-height:1.5; }
+  .hex-label em { display:block; font-style:normal; font-size:12.5px; color:#7fb2e2; }
+
+  .biz-card { border:1px solid rgba(80,160,240,.3); border-radius:5px; background:rgba(8,24,52,.55);
+    padding:8px 12px; font-size:12px; flex:1; display:flex; flex-direction:column; justify-content:space-evenly; }
+  .biz-card .bc-title { font-size:12.5px; font-weight:700; color:#8fd4ff; margin-bottom:4px; letter-spacing:1px; }
+  .biz-row { display:flex; padding:4px 0; border-bottom:1px dashed rgba(80,150,230,.15); line-height:1.5; }
+  .biz-row:last-child { border-bottom:none; }
+  .biz-row .k { flex:0 0 62px; color:#6f96c4; }
+  .biz-row .v { flex:1; color:#d9ecff; }
+
+  .tag-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px; }
+  .tag { text-align:center; font-size:12px; color:#9fd4ff; padding:7px 0; border-radius:3px;
+    border:1px solid rgba(90,175,250,.35); background:rgba(25,75,150,.28); letter-spacing:1px;
+    animation:tagGlow 3.2s ease-in-out infinite; }
+  .tag:nth-child(2){animation-delay:.8s} .tag:nth-child(3){animation-delay:1.6s} .tag:nth-child(4){animation-delay:2.4s}
+  @keyframes tagGlow { 0%,100%{ box-shadow:none;} 50%{ box-shadow:0 0 12px rgba(90,190,255,.45) inset;} }
+
+  /* ===== P3 Embedding ===== */
+  .emb-icon { display:flex; flex-direction:column; align-items:center; padding:4px 0 8px; }
+  .emb-badge { width:104px; height:88px; position:relative; display:flex; align-items:center; justify-content:center; }
+  .emb-badge .diamond { position:absolute; inset:0; }
+  .emb-logo { font-size:38px; font-weight:900; color:#eaf8ff; text-shadow:0 0 18px rgba(120,215,255,.9);
+    animation:coreBreath 2.6s ease-in-out infinite; font-family:Georgia,serif; }
+  .emb-name { text-align:center; font-size:17px; font-weight:800; color:#e6f6ff; letter-spacing:.5px; }
+  .emb-sub { text-align:center; font-size:11.5px; color:#7fb2e2; margin-top:2px; line-height:1.5; }
+  .emb-map { margin-top:8px; border:1px solid rgba(80,160,240,.28); border-radius:5px;
+    background:rgba(8,24,52,.55); padding:10px 12px; flex:1; display:flex; flex-direction:column; }
+  .emb-map-title { font-size:12.5px; color:#8fd4ff; text-align:center; letter-spacing:2px; margin-bottom:8px; }
+  .emb-dim { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px; }
+  .emb-dim b { font-size:15px; color:#ffd38a; font-family:Consolas,monospace; }
+  .emb-dim span { font-size:10.5px; color:#6f96c4; }
+  #dotMatrix { display:grid; grid-template-columns:repeat(18,1fr); gap:6px; margin:6px 0; flex:1; align-content:center; }
+  #dotMatrix i { width:10px; height:10px; border-radius:50%; background:#1d5f9e; transition:background .3s, box-shadow .3s; justify-self:center; }
+  .emb-vals { display:grid; grid-template-columns:repeat(4,1fr); gap:4px 8px; font-family:Consolas,monospace;
+    font-size:11.5px; color:#7fc0ee; }
+  .emb-vals span { transition:color .4s; }
+
+  /* ===== P4 神经网络训练 ===== */
+  .feat-row { display:flex; gap:6px; margin-bottom:8px; }
+  .feat { flex:1; text-align:center; border:1px solid rgba(80,160,240,.28); border-radius:4px;
+    background:rgba(15,45,95,.35); padding:6px 2px; }
+  .feat .fi { font-size:17px; color:#8fd4ff; }
+  .feat .ft { font-size:12px; font-weight:700; color:#dcefff; margin-top:2px; }
+  .feat .fd { font-size:10px; color:#6a8fb8; margin-top:1px; }
+  .nn-box { flex:1; border:1px solid rgba(80,160,240,.28); border-radius:5px;
+    background:rgba(6,18,42,.6); position:relative; min-height:250px; overflow:hidden; }
+  #nnSvg { width:100%; height:100%; display:block; }
+  .nn-box .scanbar { position:absolute; top:0; bottom:0; width:36px; pointer-events:none;
+    background:linear-gradient(90deg,transparent, rgba(110,210,255,.10), transparent);
+    animation:nnScan 5s ease-in-out infinite; }
+  @keyframes nnScan { 0%,100%{ left:-10%;} 50%{ left:96%;} }
+  .train-cols { display:flex; gap:6px; margin-top:8px; }
+  .train-box { flex:1; border:1px solid rgba(80,160,240,.26); border-radius:4px;
+    background:rgba(12,36,76,.4); padding:8px 10px; font-size:11px; }
+  .train-box h5 { font-size:12.5px; color:#8fd4ff; margin-bottom:5px; letter-spacing:1px; }
+  .train-box li { list-style:none; color:#a9c8e8; line-height:1.65; }
+  .train-box li::before { content:"◈ "; color:#4db2f5; }
+  .train-box.goal li::before { content:"✔ "; color:#5fd6a0; }
+
+  /* ===== P5 估值输出 ===== */
+  .val-card { border:1px solid rgba(255,190,90,.35); border-radius:5px;
+    background:linear-gradient(150deg, rgba(60,42,10,.35), rgba(10,26,56,.5)); padding:8px 10px; }
+  .val-comp { font-size:12.5px; color:#ffd9a0; font-weight:700; letter-spacing:.5px; }
+  .val-range-row { display:flex; justify-content:space-between; align-items:flex-end; margin-top:6px; }
+  .val-range .lbl, .val-mid .lbl { font-size:11px; color:#8aa8cc; }
+  .val-range .rng { font-size:16px; font-weight:800; color:#7fd4ff; font-family:Consolas,monospace; white-space:nowrap; }
+  .val-mid { text-align:right; }
+  .val-mid .mid { font-size:28px; font-weight:900; color:#ffbe5c; font-family:Consolas,monospace; white-space:nowrap;
+    text-shadow:0 0 16px rgba(255,180,80,.55); }
+  .conf-row { display:flex; align-items:center; gap:8px; margin-top:6px; }
+  .conf-row .lbl { font-size:11px; color:#8aa8cc; flex:0 0 auto; }
+  .conf-bar { flex:1; height:7px; border-radius:3px; background:rgba(80,140,220,.18); overflow:hidden; }
+  .conf-bar i { display:block; height:100%; width:0; border-radius:3px;
+    background:linear-gradient(90deg,#2f8fe0,#6fe0ff); box-shadow:0 0 8px rgba(110,220,255,.8);
+    transition:width 1.8s cubic-bezier(.22,1,.36,1); }
+  .conf-pct { font-size:16px; font-weight:800; color:#6fe0ff; font-family:Consolas,monospace; }
+
+  .dist-box { margin-top:8px; border:1px solid rgba(80,160,240,.26); border-radius:5px;
+    background:rgba(6,18,42,.6); padding:6px 8px 4px; }
+  .dist-title { font-size:12px; color:#8fd4ff; letter-spacing:1px; }
+  #distSvg { width:100%; height:126px; display:block; }
+
+  .comp-table { margin-top:8px; font-size:11.5px; }
+  .comp-table .ct-title { font-size:12.5px; color:#8fd4ff; margin-bottom:4px; letter-spacing:1px; }
+  .comp-table table { width:100%; border-collapse:collapse; }
+  .comp-table th { color:#6f96c4; font-weight:400; text-align:left; padding:3px 4px;
+    border-bottom:1px solid rgba(90,160,240,.25); font-size:11px; }
+  .comp-table td { color:#cfe4fb; padding:3.5px 4px; border-bottom:1px dashed rgba(80,150,230,.14); }
+  .comp-table td.v { color:#ffcf8a; font-family:Consolas,monospace; font-weight:700; }
+  .comp-table tr.hl td { color:#ffe2ae; }
+
+  .out-banner { margin-top:auto; display:flex; gap:8px; align-items:center; padding:8px 10px; border-radius:5px;
+    border:1px solid rgba(255,190,90,.5); background:linear-gradient(90deg, rgba(120,75,15,.45), rgba(40,30,8,.3));
+    box-shadow:0 0 18px rgba(255,170,60,.15); animation:bannerPulse 3s ease-in-out infinite; }
+  @keyframes bannerPulse { 0%,100%{ box-shadow:0 0 10px rgba(255,170,60,.12);} 50%{ box-shadow:0 0 24px rgba(255,180,80,.35);} }
+  .out-banner .ob-icon { font-size:24px; color:#ffcf8a; }
+  .out-banner .ob-t { font-size:14px; font-weight:800; color:#ffd9a0; letter-spacing:1px; }
+  .out-banner .ob-d { font-size:10.5px; color:#c8a878; margin-top:1px; }
+
+  /* ===== 底部核心逻辑 ===== */
+  footer { margin-top:10px; display:flex; align-items:center; gap:14px; }
+  .core-bar { flex:1; display:flex; align-items:center; gap:10px; border:1px solid rgba(74,165,245,.3);
+    border-radius:5px; padding:9px 16px; background:linear-gradient(90deg, rgba(14,42,86,.6), rgba(8,22,50,.6)); }
+  .core-label { font-size:15px; font-weight:800; color:#9fd8ff; letter-spacing:2px; flex:0 0 auto;
+    border-right:1px solid rgba(90,170,250,.35); padding-right:14px; }
+  .core-flow { flex:1; display:flex; align-items:center; justify-content:space-around; }
+  .core-step { font-size:14.5px; color:#d6ecff; letter-spacing:1px; white-space:nowrap; }
+  .core-arrow { font-size:18px; font-weight:900; font-family:Arial;
+    background:linear-gradient(90deg, rgba(70,170,255,.2), #9fe4ff 50%, rgba(70,170,255,.2));
+    background-size:220% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:arrowSweep 1.8s linear infinite; }
+  .foot-slogan { flex:0 0 auto; text-align:right; }
+  .foot-slogan .cn { font-size:15px; font-weight:700; color:#9fd8ff; letter-spacing:3px; }
+  .foot-slogan .en { font-size:10px; color:#5f88b6; letter-spacing:2.5px; margin-top:2px; }
+</style>
+</head>
+<body data-page-node-id="6kgkB6XMITZKBnUgMhnLEV">
+<div class="bg" data-page-node-id="6Bf69Pa2yF2C5j4JDYc7kv"><div class="orb o1" data-page-node-id="ehlMBHGb77b87O0C8svD6G"></div><div class="orb o2" data-page-node-id="AVZ2n2kaY1oApx9NDd9MJD"></div></div>
+
+<div class="stage" id="stage" data-page-node-id="5VEbGMIIRVz9YwiaqknAX2">
+  <!-- ===== 页眉 ===== -->
+  <header data-page-node-id="8Bqt8dAMhojAYAqLLa7oLU">
+    <div class="h-left" data-page-node-id="JKHsfA5Tf1H4vxGqjyC3TG">
+      <div class="clock" id="clock" data-page-node-id="21zlTRVggMO3v0BITfVXAM">23:08:24</div>
+      <div class="date-line" id="dateLine" data-page-node-id="kGfwUrTz24YyCuV53qYzO4">2026-09-08 星期二</div>
+      <div class="h-tags" data-page-node-id="P89OSDwgBonAvhLLRCLEKL"><span class="chip" data-page-node-id="j9Ipe3DZY6sd6qAhlWrbal">数据驱动价值发现</span><span class="chip" data-page-node-id="BRbs7MUoOQHLj4gm9PhOJc">AI赋能中小企业</span></div>
+    </div>
+    <div class="h-center" data-page-node-id="cZW1Lbd5LB51CzkPngAWjA">
+      <div class="h-title" data-page-node-id="1Nq1KGAzShuOpmZqAlblIB">企业估值神经网络训练技术路线</div>
+      <div class="h-sub" data-page-node-id="WW6kRFPTQayEel8ROJApru">NEURAL NETWORK PIPELINE FOR SME VALUATION</div>
+      <div class="h-deco" data-page-node-id="1z4Bwzyt6MVCBsIKBo4DKn"></div>
+    </div>
+    <div class="h-right" data-page-node-id="5EGcsVbe1YZOPFXPs9hP4Y">
+      <div class="h-formula" data-page-node-id="vpAJLSVMHhrtuffPCVVZQp">数据 × 大模型 × 深度学习 × 行业知识 × 价值发现</div>
+      <div class="h-slogan" data-page-node-id="z5FDvdrwsCJMiecHCHcX18">TECHNOLOGY<br data-page-node-id="QKJQ16DfK75jf8BR8JKrHF">DRIVES<br data-page-node-id="u6XWHVAAvSfr4lBMDkXaSm">BETTER CAPITAL</div>
+    </div>
+  </header>
+
+  <!-- ===== 主流水线 ===== -->
+  <div class="pipeline" data-page-node-id="FVHfPvzCPv5eQDiJnAnnjA">
+
+    <!-- P1 多源数据输入 -->
+    <section class="panel" data-page-node-id="kkvj32Gk6Rapp50X6Cfdpx">
+      <div class="p-head" data-page-node-id="b6MWRtrGE42bQ5BBkbHVCb"><div class="p-num" data-page-node-id="O2wdPPsVmRwPvByLyqfOXK">01</div>
+        <div data-page-node-id="u6RqBK1ojfvrO6arf8t5CC"><div class="p-title" data-page-node-id="NFiIBomlec3HDSnVaDE949">多源数据输入</div><div class="p-sub" data-page-node-id="L8UCzSYBtXRwhBGVOHY6gE">汇聚多维数据，构建企业全景信息</div></div>
+      </div>
+      <div class="d-item" data-page-node-id="2XcJKAZpxidAQuGSGLPmrr"><div class="d-icon" data-page-node-id="0cUB2OuO6GekatHLXuDMba">▤</div>
+        <div class="d-info" data-page-node-id="FubrSBbZKRWAmWynyhauxN"><div class="d-name" data-page-node-id="vSxrvWWB83cBoamKeuVJKH">并购报告</div><div class="d-desc" data-page-node-id="imFCfcJymjUn43AXpibcCl">收集并购交易数据<br data-page-node-id="6Tk3kSYAawlNPpQ365zB9u">提取估值参考</div></div>
+        <div class="d-val" data-page-node-id="a8F75SO9y5UxsGi6s9MW48"><span class="d-num" data-count="12428" data-page-node-id="MqImHKwWrxKwntZVBm8ozG">0</span><span class="d-unit" data-page-node-id="rs3Uf7YMe7Q6t5hYIPWtME">份</span>
+          <svg class="mini-chart" viewBox="0 0 52 26" data-page-node-id="hOPGtxdycoAuYA3VRqvuT5"><g class="bars" fill="#3f9de0" data-page-node-id="j7oMLITj9dfTgBJrPSb2HX">
+            <rect x="2" y="14" width="6" height="12" data-page-node-id="H5C64cDa5azwjogFGzBEmO"/><rect x="11" y="9" width="6" height="17" data-page-node-id="rtH7k0xkGOWO7SwipqmdaN"/>
+            <rect x="20" y="16" width="6" height="10" data-page-node-id="k7Orwst3EOYLYO94SikiRP"/><rect x="29" y="6" width="6" height="20" data-page-node-id="3iLIciQ2AiZFoQZ57bq8P5"/>
+            <rect x="38" y="11" width="6" height="15" data-page-node-id="LbFChwoOGVydOIb26t9maL"/><rect x="46" y="4" width="5" height="22" data-page-node-id="PsKPXeEUdZ3RiEM4ZMqvGs"/></g></svg></div>
+      </div>
+      <div class="d-item" data-page-node-id="xJc1jocTNLccsZvNH9X6ej"><div class="d-icon" data-page-node-id="kJqiugOZYdEyHA1eWEPPfg">▦</div>
+        <div class="d-info" data-page-node-id="KfJHUNxJpF9WDS3mQ5yyQ7"><div class="d-name" data-page-node-id="d1D1QWFOA4PL77XYLU5w5h">股转平台 / 新三板</div><div class="d-desc" data-page-node-id="nhQfa8pCh7V1hcG48caOpg">挂牌企业信息<br data-page-node-id="0JxmiCNbdQb3YisT8mKoK2">历史交易与估值</div></div>
+        <div class="d-val" data-page-node-id="Pb9FHtcj3qeTHXFqG0ahMA"><span class="d-num" data-count="8356" data-page-node-id="jNVFouLhGaTYvaoTH5lbP8">0</span><span class="d-unit" data-page-node-id="gRF4iDsqq4mr33u1lD9YAT">家</span>
+          <svg class="mini-chart" viewBox="0 0 52 26" data-page-node-id="x5sMp9McukDlGLEauL6We8"><g class="bars" fill="#3f9de0" data-page-node-id="IzjE8zH19e3V4J1t4tvLQ2">
+            <rect x="2" y="10" width="6" height="16" data-page-node-id="VHmXcH4FSAcTtmWo3ZWk8g"/><rect x="11" y="15" width="6" height="11" data-page-node-id="yYAPqHa4r6I5thXpqeEhQu"/>
+            <rect x="20" y="7" width="6" height="19" data-page-node-id="YWQEz6aCWmLC4w4DoztN0I"/><rect x="29" y="12" width="6" height="14" data-page-node-id="0dpIod5kToChuGsfI1dAu5"/>
+            <rect x="38" y="5" width="6" height="21" data-page-node-id="TFhl13yEvxAKXYMJD9ZZlG"/><rect x="46" y="9" width="5" height="17" data-page-node-id="JbrER9M6SDFFzD4lkcKEBM"/></g></svg></div>
+      </div>
+      <div class="d-item" data-page-node-id="XWjrdIE0YV41hhtzYs27eA"><div class="d-icon" data-page-node-id="1r3RJvAeEu8NVSuBx2xhAJ">🏢</div>
+        <div class="d-info" data-page-node-id="Vi1j49PCiHAEFIgMtx5Nob"><div class="d-name" data-page-node-id="bADocvJzw2ksor8g3vZxk5">企业工商信息</div><div class="d-desc" data-page-node-id="ar7aTfnt3ZaYlYvIp3aqg8">工商注册、股权结构<br data-page-node-id="HLJicf7BGP3aQ83uSxVnCZ">对外投资、变更记录</div></div>
+        <div class="d-val" data-page-node-id="F7Ac5hysUlP31zpbnggDds">
+          <svg class="mini-chart" viewBox="0 0 52 26" data-page-node-id="Z7CRGwQrXFYmKkRmGalHw9"><g class="bars" fill="#2f7fc0" data-page-node-id="EatMccNU1DOLRtdvFcRTFW">
+            <rect x="2" y="12" width="7" height="14" data-page-node-id="QPNErhkqyvokEMig2s6qZm"/><rect x="12" y="8" width="7" height="18" data-page-node-id="6ZisjadoVT0NZ3T7nhF7br"/>
+            <rect x="22" y="14" width="7" height="12" data-page-node-id="iQe2vh5L35sltIndhtcAGF"/><rect x="32" y="6" width="7" height="20" data-page-node-id="jI61mW9HrqhYxuI5FjQyv2"/>
+            <rect x="42" y="10" width="7" height="16" data-page-node-id="ubytbhhWvAf0brgeoJg67S"/></g></svg></div>
+      </div>
+      <div class="d-item" data-page-node-id="RtUOHzYyfKsvfWQ9NS7a7M"><div class="d-icon" data-page-node-id="K1ZJEEz7lo30cZhuPF7dkZ">💡</div>
+        <div class="d-info" data-page-node-id="Py1OUMkyBs0ocEQWVqm94S"><div class="d-name" data-page-node-id="GnNM4PQ9M1DNZcoSmUnCX4">专利与知识产权</div><div class="d-desc" data-page-node-id="qYx6AWRRIrlq9NZNZw2wdx">专利数量、技术领域<br data-page-node-id="Luh3S0UItAAFDKBeb9OXSQ">创新能力评估</div></div>
+        <div class="d-val" data-page-node-id="X79Db7IikT42mx1us6fHAd"><span class="d-num" data-count="3902" data-page-node-id="JgiFn9b5ZMogLHXsoR935F">0</span><span class="d-unit" data-page-node-id="Ik67JPsBS7ZA6H9Q3GbZD8">万条</span>
+          <svg class="mini-chart" viewBox="0 0 52 26" data-page-node-id="zwNOW8OpnBaT9GobAAqAaG"><g class="bars" fill="#3f9de0" data-page-node-id="MPH46OC5uxKRffvVTCNGvi">
+            <rect x="2" y="16" width="6" height="10" data-page-node-id="zDmsl8lE8CStpjdLZXETys"/><rect x="11" y="12" width="6" height="14" data-page-node-id="ggA3eW25qaS3taJA6PxCKv"/>
+            <rect x="20" y="8" width="6" height="18" data-page-node-id="nFmjI7EZTCzQEbWNY6qwq5"/><rect x="29" y="13" width="6" height="13" data-page-node-id="OJTi1Yxb9D17miGqgdCmCq"/>
+            <rect x="38" y="6" width="6" height="20" data-page-node-id="WBxoA8DzFQSFKiNF9aDGGB"/><rect x="46" y="10" width="5" height="16" data-page-node-id="GgZYl4LmFCDUXJyEHZXvAu"/></g></svg></div>
+      </div>
+      <div class="d-item" data-page-node-id="3fYEfEO2HWRcm35W8NH6mv"><div class="d-icon" data-page-node-id="ygjcLHuM3SaUKXvc4KVot3">📰</div>
+        <div class="d-info" data-page-node-id="wuja86koFjVOnIlOpC1ire"><div class="d-name" data-page-node-id="LpHS23AalOHDpKKtcpTLkC">企业新闻与公告</div><div class="d-desc" data-page-node-id="o6BdTmWEHQbRGiKerFztXE">新闻动态、重大事件<br data-page-node-id="w44Hz3oYJ3vCgHrPUqFpVs">政策与行业舆情</div></div>
+        <div class="d-val" data-page-node-id="xzvDFKva1NEN4reBl2jpme">
+          <svg class="mini-chart" viewBox="0 0 52 26" data-page-node-id="YoZGiG3idFoft6e90bX3GZ"><polyline class="spark" points="2,20 10,14 18,17 26,8 34,12 42,5 50,9"
+            fill="none" stroke="#5cc8ff" stroke-width="1.6" data-page-node-id="dRR7RrLcUBVE7n74R1MceG"/></svg></div>
+      </div>
+      <div class="d-item" data-page-node-id="OZPeRsHDRaxd5AS5oziWxD"><div class="d-icon" data-page-node-id="IKGFoQ6EPOJ7ZfWcL15WRB">📊</div>
+        <div class="d-info" data-page-node-id="LTOPqPWPH1UzUyJFGaHy8C"><div class="d-name" data-page-node-id="9aaL94YzLIxZVTJOc84XTC">财务与经营文本</div><div class="d-desc" data-page-node-id="yX8Canhut0y2ZuGGvPrNWB">财报、招股书、年报<br data-page-node-id="lCtspMDSKVXXENjCi1MRTe">管理层讨论与分析</div></div>
+        <div class="d-val" data-page-node-id="gQ75pk4qfXlJHbEGc9HX2R"><span class="d-num" data-count="5671" data-page-node-id="Gu1FyVc1L55K24cgZVAigq">0</span><span class="d-unit" data-page-node-id="62fxxWjK7RijjulBepEpEX">万条</span>
+          <svg class="mini-chart" viewBox="0 0 52 26" data-page-node-id="L3QwNYI4sudF7zHrtVtDFD"><g class="bars" fill="#3f9de0" data-page-node-id="4aeSpOQwW1fBlV9MdJm1Qy">
+            <rect x="2" y="13" width="6" height="13" data-page-node-id="T3TCverkaE2MPFcEYg3uZa"/><rect x="11" y="8" width="6" height="18" data-page-node-id="EI2VgBLVqon4ARNwxIVlXz"/>
+            <rect x="20" y="15" width="6" height="11" data-page-node-id="fz18f9v8p3zw4LFYNYF5lN"/><rect x="29" y="5" width="6" height="21" data-page-node-id="WIzLfwCodbsFkRsOvtJFlM"/>
+            <rect x="38" y="10" width="6" height="16" data-page-node-id="4UyynsOGBL2CmlXCpkpCzq"/><rect x="46" y="7" width="5" height="19" data-page-node-id="fGZTshl3YOhFhgimcC5oWr"/></g></svg></div>
+      </div>
+      <div class="p-foot" data-page-node-id="1KGRZSliHwqyo1Ffin3VT9">多源异构数据 · 实时更新 · 全面覆盖</div>
+    </section>
+
+    <div class="flow-arrow" data-page-node-id="PFEfdZmvfxFHP2MJnsD6u0"><div class="beam" data-page-node-id="VsBJojofdxyMR9aIeiZ1SD"></div><div class="chev" data-page-node-id="HjHztnVVGkshmQ8Bv9TbSa">»</div></div>
+
+    <!-- P2 大模型企业画像生成 -->
+    <section class="panel" data-page-node-id="s6Tr5AInD1jbsYWK34w4hI">
+      <div class="p-head" data-page-node-id="0BE7UKGFfC1H9IATawuMlC"><div class="p-num" data-page-node-id="AACqmEyiTOBEPmnAfCNJ8u">02</div>
+        <div data-page-node-id="mW5IGRrJzhSkFtdl3nQk2w"><div class="p-title" data-page-node-id="cStgmLk0JYHDNQ2jbcCmvB">大模型企业画像生成</div><div class="p-sub" data-page-node-id="9TRHdmmajYSyCyfZbToq0A">基于大模型的企业信息理解与结构化</div></div>
+      </div>
+      <div class="hex-wrap" data-page-node-id="nIWNbKlcJCxXuFhpuEpSQy">
+        <div class="hex" data-page-node-id="1HA91O0t6anIOFSLTnbe9P">
+          <svg class="ring" viewBox="0 0 120 104" data-page-node-id="S6PfHGZ3NswXzMvEo51VnH"><polygon points="60,4 112,30 112,76 60,100 8,76 8,30"
+            fill="none" stroke="#4db2f5" stroke-width="1.4" stroke-dasharray="10 6" opacity=".8" data-page-node-id="mtQEhBLPqm1HujEANT0xVx"/></svg>
+          <svg class="ring2" viewBox="0 0 120 104" data-page-node-id="3HrI1GiEKWnNBbAagClDyC"><polygon points="60,4 112,30 112,76 60,100 8,76 8,30"
+            fill="none" stroke="#8fdcff" stroke-width="1" stroke-dasharray="4 8" opacity=".55" data-page-node-id="A4PWWZSgHs2q9rIIpiV3o8"/></svg>
+          <div class="hex-core" data-page-node-id="YGpvSwPfDmv8Gwv1j6ETaD">
+            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#eaf8ff" stroke-width="1.5" data-page-node-id="z2HrWlZdi54bJyDMjElnVw">
+              <circle cx="10" cy="12" r="3.2" data-page-node-id="iSnO1srhisooGCB1LCg1fh"/><circle cx="24" cy="10" r="3.2" data-page-node-id="Taha7ar74RlROXDh6BrRvM"/><circle cx="17" cy="24" r="3.2" data-page-node-id="VHH94UxfkMo7kDWtlbluB8"/>
+              <path d="M12.5 10.5 21 10M11.5 14.8 15.5 21.5M22.5 12.8 18.5 21.5" data-page-node-id="JToyS3NPIAMSxWEOlnRNwx"/>
+            </svg>
+          </div>
+        </div>
+        <div class="hex-label" data-page-node-id="GTJY7SW3792bqOnblTtH0w">大模型总结<em data-page-node-id="v0GqPUGgilAyzaETqruuUC">企业画像卡生成</em></div>
+      </div>
+      <div class="biz-card" data-page-node-id="4QVBzkYXdzb5Pfv9uWbYWz">
+        <div class="bc-title" data-page-node-id="UBXbGxo3yWxCwH8Mko2Xua">企业画像卡（示例）</div>
+        <div class="biz-row" data-page-node-id="CRkzDy5QG8ieM0zXCgZ7dG"><span class="k" data-page-node-id="jqsio7CqMNCkebz6otLlsG">企业名称</span><span class="v" data-page-node-id="Q6rvg1M0O4tkw6rMfOAoxY">某某新能源科技有限公司</span></div>
+        <div class="biz-row" data-page-node-id="vSGK8nH3aFNB2QhefZqZP9"><span class="k" data-page-node-id="xJjvmnThIMV2MqVxYhO4SI">所属行业</span><span class="v" data-page-node-id="NRy7s7lqtBKATOf5DzBDkt">新能源 / 新材料</span></div>
+        <div class="biz-row" data-page-node-id="Hc5JgEiLRSmySe6dlcDHFO"><span class="k" data-page-node-id="MNtLJYg55v0zwXwydsiDpC">发展阶段</span><span class="v" data-page-node-id="v8b0R9f5qVUbqpjAu8AGyy">成长期（B轮）</span></div>
+        <div class="biz-row" data-page-node-id="JHFghupRk9VSUvILJFPj4P"><span class="k" data-page-node-id="9eZFYBxcXWPWiljnG80wsm">核心产品</span><span class="v" data-page-node-id="XBSJEn54mOk0DEnW0kbNLu">高性能电池材料</span></div>
+        <div class="biz-row" data-page-node-id="YlhlPVl71zZjrYl8i0r0sh"><span class="k" data-page-node-id="LBaAdwMW0OETsrURg1l3G5">技术能力</span><span class="v" data-page-node-id="rEy5n5ARRmF7LSLmujK2ZH">拥有多项核心专利，具备自主研发能力</span></div>
+        <div class="biz-row" data-page-node-id="Le593nSYc0gXgiB2aVyIst"><span class="k" data-page-node-id="sEL5SJ2O7yXPVv4Y9g6eAv">融资需求</span><span class="v" data-page-node-id="7FRfzN4VpBaDczMX6SQ2CL">约2-3亿元</span></div>
+        <div class="biz-row" data-page-node-id="ETC9B3EokM9FCd1nuTdHIk"><span class="k" data-page-node-id="tVcQY3jDQq9d3wEkHaX9X1">成长特征</span><span class="v" data-page-node-id="kD2AuXl4sapKnMSdDvGEqW">近三年营收CAGR 45%，下游需求快速增长，具备较强的市场竞争力</span></div>
+      </div>
+      <div class="tag-grid" data-page-node-id="RKPjsx2jz24Ad1KzrN7CmD">
+        <div class="tag" data-page-node-id="YjiaN8jDFXxBsHAGTJRv6o">自然语言理解</div><div class="tag" data-page-node-id="7AMiF79Vvmfz3AKb0OksHj">行业知识注入</div>
+        <div class="tag" data-page-node-id="aP2d91ZbrrATuLZnAgbOnm">结构化抽取</div><div class="tag" data-page-node-id="fS93kBpcZMlK9f7AGdBj4Y">企业画像生成</div>
+      </div>
+    </section>
+
+    <div class="flow-arrow" data-page-node-id="G5P6sMc0gWPoKocUZbYt11"><div class="beam" data-page-node-id="37uj8Jwu2tqks4S0MFZK3g"></div><div class="chev" data-page-node-id="lqN5FjGobrs2XY82sTclGY">»</div></div>
+
+    <!-- P3 Embedding -->
+    <section class="panel" data-page-node-id="UpEcxtihlOFw63iECEuIXa">
+      <div class="p-head" data-page-node-id="wV6Bfeb5v3RHb2TR97t4fp"><div class="p-num" data-page-node-id="ofyCIvk6asPudOfle0htZR">03</div>
+        <div data-page-node-id="MC2OdcvcRricAovvwlJBRG"><div class="p-title" data-page-node-id="1DoRETdy8HIRXCApkEYgTh">Qwen3-VL Embedding 8B</div><div class="p-sub" data-page-node-id="mwhTOZDKvxe4yT6gwWHAqN">将企业画像文本转化为高维向量表示</div></div>
+      </div>
+      <div class="emb-icon" data-page-node-id="HsxHZAgMS9V7dFH0BYdgvA">
+        <div class="emb-badge" data-page-node-id="VLf0BTPnUU5iETv96Xn67y">
+          <svg class="diamond" viewBox="0 0 104 88" data-page-node-id="dK29aVYJILoMt2TVotSZj3">
+            <polygon points="52,3 101,26 101,64 52,85 3,64 3,26" fill="rgba(30,90,170,.25)"
+              stroke="#4db2f5" stroke-width="1.4" stroke-dasharray="8 5" data-page-node-id="ab7jJvNjn2gCHzq6uFFmna"/>
+          </svg>
+          <div class="emb-logo" data-page-node-id="8P6JlSeThFjmLOBcqf2Q9m">𝑽</div>
+        </div>
+        <div class="emb-name" data-page-node-id="1xUsbV3D3zdqnQN3uzNiFF">Qwen3-VL Embedding 8B</div>
+        <div class="emb-sub" data-page-node-id="iOtrnEmKzDJDIsTOkkdGzO">多模态文本编码<br data-page-node-id="qHGCeVaZQ58qDH9pAK2Pol">（专业领域增强）</div>
+      </div>
+      <div class="emb-map" data-page-node-id="ix1ShlP37XoG6zsMdRLPCO">
+        <div class="emb-map-title" data-page-node-id="AVKItQoa9qXOQCDWxuUG5E">文本画像 → 向量表示</div>
+        <div class="emb-dim" data-page-node-id="utKF54yP5PO44ZiVQXwEoU"><b data-page-node-id="2hdWYeBgx08GXwn5X10nyK">4096维向量</b><span data-page-node-id="hkcHHRwQLGOXkoGoAeJh5C">4096-dimensional embedding</span></div>
+        <div id="dotMatrix" data-page-node-id="vEFiSd6CbKmEnbh08EMZTn"></div>
+        <div class="emb-vals" id="embVals" data-page-node-id="CyUJYgJycbrwbsPKC0LEAY">
+          <span data-page-node-id="atg8jNOLgH38SSrKxQSN0f">0.023</span><span data-page-node-id="Ay5LBV10KSoy8Yf7V9VVQc">-0.118</span><span data-page-node-id="FMwTroVAYi2XS0tnfs8omN">0.345</span><span data-page-node-id="LpxG7I4zBvumEJVngvY5IT">0.017</span>
+          <span data-page-node-id="xrSzJCt3dbVceHgUIghNh8">-0.289</span><span data-page-node-id="SkHa7c3dPGVcv5MYyWYj9p">0.156</span><span data-page-node-id="5Fy3ufTgw0T9VLbSptl6U9">0.082</span><span data-page-node-id="hkZ0jEyX4SWzh4eY5t04Zz">-0.037</span>
+        </div>
+      </div>
+      <div class="tag-grid" data-page-node-id="yR3a4gQEhOM0ACl1tjHw0l">
+        <div class="tag" data-page-node-id="lytzvKpAfLwJozMDJ91ZRE">语义理解</div><div class="tag" data-page-node-id="i6IFWG831xBctIxhhEvaoj">领域语义对齐</div>
+        <div class="tag" data-page-node-id="KrMe2pYuzcfKhxXTzr89pw">高维向量表示</div><div class="tag" data-page-node-id="dR45AXkwltn6YuhLVFq3zD">4096 维 Embedding</div>
+      </div>
+    </section>
+
+    <div class="flow-arrow" data-page-node-id="YDN5RxuCBIiqoSdkTplAGW"><div class="beam" data-page-node-id="WtDwPrcvCEzTcatlHk3tCM"></div><div class="chev" data-page-node-id="7aBCpra57FocOkLTH95nT1">»</div></div>
+
+    <!-- P4 神经网络训练 -->
+    <section class="panel" data-page-node-id="nJyu5hjzFPYiu4wKFYI8gR">
+      <div class="p-head" data-page-node-id="GzlbMEvE0Kq9RG0FFYyi6t"><div class="p-num" data-page-node-id="F97rZlsZtTB4xUCOYcJSxB">04</div>
+        <div data-page-node-id="gzp9gAh76a5IAAJ67X4EQ4"><div class="p-title" data-page-node-id="mklfZQgDE6Yx2kT4KWpUYT">多层神经网络训练</div><div class="p-sub" data-page-node-id="OwpZ3t1Ce9fSdSCYlmfL0k">基于历史样本进行监督学习，学习估值规律</div></div>
+      </div>
+      <div class="feat-row" data-page-node-id="xGuDzyrRnN0ZfPHiw6XkIq">
+        <div class="feat" data-page-node-id="VBlp73nttDnDu9tlk1XPWC"><div class="fi" data-page-node-id="4I95ZC20z2fllmkPGkchVq">🗂</div><div class="ft" data-page-node-id="WRp7aph4Dtw86PSlhI6pIR">历史样本训练</div><div class="fd" data-page-node-id="XQhAsVus2jfVtvdJpJy076">（并购交易+股转平台）</div></div>
+        <div class="feat" data-page-node-id="nNMKvqCNOEbhWFKGKQtEZi"><div class="fi" data-page-node-id="j78EXkGr3uhTN8QVMEgTFF">🏷</div><div class="ft" data-page-node-id="xOTp5ZZ14SszBGmadwUqVx">估值标签学习</div><div class="fd" data-page-node-id="sZxx0ba9NhzNJKG9Ott7X5">（交易价格/估值区间）</div></div>
+        <div class="feat" data-page-node-id="jsQHeKiOeZQM5sC93sJZBW"><div class="fi" data-page-node-id="8nmxJPGDiREOt0jkSeYgd3">🎯</div><div class="ft" data-page-node-id="wJxQuDM1zWnyPlG5Ve0Fp0">监督学习</div><div class="fd" data-page-node-id="VxSOXd2M7kTJdMqEZk5pCI">（最小化预测误差）</div></div>
+      </div>
+      <div class="nn-box" data-page-node-id="6ZffzW3LxKrNPFhoq0zdtJ"><div class="scanbar" data-page-node-id="jHUHSaJ9VL5m8ns2hp5E6F"></div><svg id="nnSvg" viewBox="0 0 260 240" preserveAspectRatio="xMidYMid meet" data-page-node-id="8YkP9SWLuKrsNGgRGOD8TT"></svg></div>
+      <div class="train-cols" data-page-node-id="eyK2O34BtbXi0LoKfbNkzo">
+        <div class="train-box" data-page-node-id="4SQZTIHFqbYT5bdRkatbHz">
+          <h5 data-page-node-id="Uabry1ccaKt1afTHBcXZFP">训练数据来源（估值标签）</h5>
+          <li data-page-node-id="pImCOhDZyPhDa8jaPkTlQk">并购交易：历史并购案例的交易金额、PS/PE等估值参考</li>
+          <li data-page-node-id="kCuNdBs60VSKGqAzEghvVD">股转平台：新三板/北交所企业的市场估值数据</li>
+          <li data-page-node-id="tWA8dGCwqHeanFKYoppl7y">行业可比公司：同行业可比企业估值参考</li>
+        </div>
+        <div class="train-box goal" style="flex:0 0 96px;" data-page-node-id="focyyGbQsSUgNe1GA66haX">
+          <h5 data-page-node-id="nVGne8hwo3umWSr9eqObK4">训练目标</h5>
+          <li data-page-node-id="jsI46EJZpAwZJ9SN1fqVG1">拟合估值规律</li><li data-page-node-id="RUDNWTdqgeiBND0Uh7LarC">提升泛化能力</li><li data-page-node-id="DhDimobZzWVlolyIY1XcHB">控制过拟合</li><li data-page-node-id="8ebm16hzFZwt1NboD6GMt1">验证集效果评估</li>
+        </div>
+      </div>
+    </section>
+
+    <div class="flow-arrow" data-page-node-id="vnWP4ZVJfr64ABDCHc8HHX"><div class="beam" data-page-node-id="DfA0t6SXJFOAqGihM8ZdyV"></div><div class="chev" data-page-node-id="iTmHJBSSGD0DCCSCtIvyWA">»</div></div>
+
+    <!-- P5 估值输出 -->
+    <section class="panel" data-page-node-id="kDhiABPSllxGgZx0ALmBpM">
+      <div class="p-head" data-page-node-id="vuhJYAuLq80qqrjnwNwwd8"><div class="p-num" data-page-node-id="bO3Ag5wvKwr7hM93NR031m">05</div>
+        <div data-page-node-id="dnOELGXcj8oK7CBbbRJ3G8"><div class="p-title" data-page-node-id="JLFb41YvCucR2Ofq4fLQPy">企业估值输出</div><div class="p-sub" data-page-node-id="cBEEQ2cBB1BIuz6X9Wk9j6">输出估值结果与可解释性分析</div></div>
+      </div>
+      <div class="val-card" data-page-node-id="CsJ4QNzwBlaquOyDzIo7NF">
+        <div class="val-comp" data-page-node-id="S2g8y6dsHYwa5tzqY9gkgh">🏢 某某新能源科技有限公司</div>
+        <div class="val-range-row" data-page-node-id="MXjfTCcORUmn8D3yWmAJHP">
+          <div class="val-range" data-page-node-id="VFNxg2oGDXqUnxbp1wJ0Lf"><div class="lbl" data-page-node-id="43qFlmU1h9tp6WFEmZSsv8">企业估值区间</div>
+            <div class="rng" data-page-node-id="tQOunhnM9Kfvdv1kj6cjfk"><span data-count="6.8" data-dec="1" data-page-node-id="Iy6sRbHu3dZBwUVH0wwTDF">0</span>亿 - <span data-count="8.1" data-dec="1" data-page-node-id="eJm9UrXougZjSGo9pzQGUS">0</span>亿元</div></div>
+          <div class="val-mid" data-page-node-id="trjQg14k7WhPjb1IefCevg"><div class="lbl" data-page-node-id="PakXow5YxkF6NKOZ243VrC">估值中枢</div>
+            <div class="mid" data-page-node-id="FmD05IMh3WVvATVJa5klpe"><span id="midVal" data-count="7.4" data-dec="1" data-page-node-id="3Wb8mefrXZbPeNBGbfwOnc">0</span>亿元</div></div>
+        </div>
+        <div class="conf-row" data-page-node-id="xYGc7cBqkaaTFGedz1tbpI"><span class="lbl" data-page-node-id="cUrM187xHFCu1Sq20gf2GF">置信度</span>
+          <div class="conf-bar" data-page-node-id="21pZIIxfvFVtmDICvAvQNL"><i id="confFill" data-page-node-id="uTwnmuxUVhlW5QxjxCN02M"></i></div>
+          <span class="conf-pct" id="confPct" data-count="72" data-page-node-id="gE0wiRNLDekgVveMredsWn">0</span><span style="color:#6fe0ff;font-size:12px;" data-page-node-id="AcdUpwvHAnorBw92Lx7EIJ">%</span>
+        </div>
+      </div>
+      <div class="dist-box" data-page-node-id="UtgFD2VOxzU5wjV7OZ1c9S">
+        <div class="dist-title" data-page-node-id="H7RkfQBKSY5vHTXmuLXOh5">估值分布（概率密度）</div>
+        <svg id="distSvg" viewBox="0 0 252 118" preserveAspectRatio="xMidYMid meet" data-page-node-id="k5OOcimWFsbobNmqi3Y0gw"></svg>
+      </div>
+      <div class="comp-table" data-page-node-id="bK3PGM2J29JKRkxaIYJu4o">
+        <div class="ct-title" data-page-node-id="JItC16Wc1dv8DVcdnDjLaF">可比样本支持（Top 5）</div>
+        <table data-page-node-id="dmCHsm4nKTUW7tREasvtVv">
+          <tr data-page-node-id="MwWjAx2mBiO0Gec2feAvqW"><th data-page-node-id="DjEyj7EDuLLFGNB6H4aBHY">#</th><th data-page-node-id="2AvFZTwxA62BHxBOhaY5vL">可比公司</th><th style="text-align:right;" data-page-node-id="gr4oalr9gvczcrtYNCoBmz">估值（亿元）</th></tr>
+          <tr data-page-node-id="hXmkgDigA1i2ZwAEt9PgKx"><td data-page-node-id="PNsRNEBY35MAe6UcSI2v3k">1</td><td data-page-node-id="aKwBH8kcuByzXjRmNSk84l">A公司</td><td class="v" style="text-align:right;" data-page-node-id="QhYXNE7fvUjVwGdDxwR0sN">7.1</td></tr>
+          <tr data-page-node-id="AYDCcFyb68Ur4S2blke02T"><td data-page-node-id="dhEifDCRb5hCtIA7p4rVYD">2</td><td data-page-node-id="4cyLtaw0cfaF5Zd4CHwYy0">B公司</td><td class="v" style="text-align:right;" data-page-node-id="RCUIqtRHvTwtV70t6NIeUx">6.8</td></tr>
+          <tr data-page-node-id="A11YYv1AJv5wOUPi3CytFj"><td data-page-node-id="5JdIPoxpzAf3nNzGubXD4I">3</td><td data-page-node-id="39GZTpjh8wVKRSDJ1IrPbO">C公司</td><td class="v" style="text-align:right;" data-page-node-id="4qKJXElSTaned4lq2iZFnn">8.3</td></tr>
+          <tr class="hl" data-page-node-id="z8EhIMQgekbS6YMMIXAqgg"><td data-page-node-id="KMZUWm6iZsQYydpEC04RKX">4</td><td data-page-node-id="3IQzA8dDbosJ6w8FsCxJRf">D公司</td><td class="v" style="text-align:right;" data-page-node-id="OSBUWAG93vXuwSCWbzcVBo">7.6</td></tr>
+          <tr data-page-node-id="XRuUNRfHX4UT84IvPDFWeN"><td data-page-node-id="QzoGl9DqLy63Dgxvc6AQKv">5</td><td data-page-node-id="MixTitMBy0kuennXlsppxe">E公司</td><td class="v" style="text-align:right;" data-page-node-id="BEcn7oGVBSeMfUlxPit8Vr">7.2</td></tr>
+        </table>
+      </div>
+      <div class="out-banner" data-page-node-id="5Td3RAmJWvTeIaKdbv07nb">
+        <div class="ob-icon" data-page-node-id="YLsBLGKv6FxXfK4FIszqqG">📑</div>
+        <div data-page-node-id="1jVbOlZqOusMsvSW1AuvYD"><div class="ob-t" data-page-node-id="F6y2I7oOJIzV7Ka43uReOW">输出：企业估值 + 解释摘要</div>
+        <div class="ob-d" data-page-node-id="u1D6WO11DJ3VpK82eCwX51">基于多维数据与可比样本的综合分析</div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== 底部核心逻辑 ===== -->
+  <footer data-page-node-id="6Gy1HKMqYN275aW2pDE8y6">
+    <div class="core-bar" data-page-node-id="j0BIJofebLqk9ETI8ruCYr">
+      <div class="core-label" data-page-node-id="nM8O73znBY3YMXuhV594jV">核心逻辑</div>
+      <div class="core-flow" data-page-node-id="LYNv53HvKdLLlQEHjBMQHS">
+        <span class="core-step" data-page-node-id="lf7eANRWrlnBrixJ8Sw0lc">多源数据</span><span class="core-arrow" data-page-node-id="QqroVpoPaZfNDZjDNxZVz6">➜</span>
+        <span class="core-step" data-page-node-id="nFbSVAytBMEepxisKXvBYr">大模型企业画像</span><span class="core-arrow" data-page-node-id="w3WCFV5adDuWDPWUDIVmhf">➜</span>
+        <span class="core-step" data-page-node-id="okPnFPWIHPjsiQ2vbGorvF">Embedding向量化</span><span class="core-arrow" data-page-node-id="qAsdXvL1bs5FZ35pUjZ3cB">➜</span>
+        <span class="core-step" data-page-node-id="f3P3dRVMENXk3twN1otmB0">神经网络训练</span><span class="core-arrow" data-page-node-id="vY8TQiRH3NbTlTJptNBkBV">➜</span>
+        <span class="core-step" data-page-node-id="BIbSEKunqkWUpr6VHV3P2O">企业估值输出</span>
+      </div>
+    </div>
+    <div class="foot-slogan" data-page-node-id="7f4NvcHDvGeLYJb7KVJZB7">
+      <div class="cn" data-page-node-id="sVIsK1BwHfRWoSyOAAGiao">让数据创造更大的企业价值</div>
+      <div class="en" data-page-node-id="DCCsHvZxUl4mZqHLyVVwbp">DATA EMPOWERS BUSINESS VALUE</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ===== 舞台等比缩放 ===== */
+function fit(){
+  const s=document.getElementById('stage');
+  const sc=Math.min(window.innerWidth/1640, window.innerHeight/940);
+  s.style.transform=`translate(-50%,-50%) scale(${sc})`;
+}
+window.addEventListener('resize',fit); fit();
+
+/* ===== 实时时钟 ===== */
+function tick(){
+  const n=new Date(), p=v=>String(v).padStart(2,'0');
+  document.getElementById('clock').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  const wk=['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][n.getDay()];
+  document.getElementById('dateLine').textContent=`${n.getFullYear()}-${p(n.getMonth()+1)}-${p(n.getDate())} ${wk}`;
+}
+setInterval(tick,1000); tick();
+
+/* ===== 数字滚动 ===== */
+function countUp(el){
+  const target=parseFloat(el.dataset.count), dec=parseInt(el.dataset.dec||0);
+  const dur=1800, t0=performance.now();
+  function step(t){
+    const k=Math.min((t-t0)/dur,1), e=1-Math.pow(1-k,3);
+    const v=target*e;
+    el.textContent = dec? v.toFixed(dec) : Math.round(v).toLocaleString('en-US');
+    if(k<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+setTimeout(()=>document.querySelectorAll('[data-count]').forEach(countUp), 600);
+setTimeout(()=>{ document.getElementById('confFill').style.width='72%'; }, 900);
+
+/* ===== P1 迷你柱状图生长 & 折线描画 ===== */
+document.querySelectorAll('.bars rect').forEach((r,i)=>{
+  const h=r.getAttribute('height'), y=r.getAttribute('y');
+  r.style.transformOrigin=`${+r.getAttribute('x')+3}px 26px`;
+  r.style.transform='scaleY(0)';
+  setTimeout(()=>{ r.style.transition='transform .9s cubic-bezier(.22,1,.36,1)'; r.style.transform='scaleY(1)'; }, 500+i*45);
+});
+document.querySelectorAll('.spark').forEach(p=>{
+  const len=p.getTotalLength();
+  p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+  setTimeout(()=>{ p.style.transition='stroke-dashoffset 1.6s ease'; p.style.strokeDashoffset=0; }, 700);
+});
+
+/* ===== P3 Embedding 点阵：闪烁 + 列扫描 ===== */
+const dm=document.getElementById('dotMatrix'), DOTS=18*6, dots=[];
+for(let i=0;i<DOTS;i++){ const d=document.createElement('i'); dm.appendChild(d); dots.push(d); }
+let scanCol=0;
+setInterval(()=>{
+  dots.forEach((d,i)=>{
+    const col=i%18;
+    if(col===scanCol){ d.style.background='#9fe4ff'; d.style.boxShadow='0 0 6px rgba(140,220,255,.9)'; }
+    else if(Math.random()<0.06){ d.style.background='#4da9e8'; d.style.boxShadow='0 0 4px rgba(80,180,255,.6)'; }
+    else { d.style.background='#1d5f9e'; d.style.boxShadow='none'; }
+  });
+  scanCol=(scanCol+1)%18;
+},110);
+/* 向量数值随机扰动 */
+const embVals=[...document.querySelectorAll('#embVals span')];
+setInterval(()=>{
+  const el=embVals[Math.floor(Math.random()*embVals.length)];
+  el.textContent=(Math.random()*0.7-0.35).toFixed(3);
+  el.style.color='#ffe2ae'; setTimeout(()=>el.style.color='',500);
+},900);
+
+/* ===== P4 神经网络：建图 + 信号脉冲 ===== */
+(function buildNN(){
+  const svg=document.getElementById('nnSvg'), NS='http://www.w3.org/2000/svg';
+  const W=260,H=240, layers=[6,7,7,7,4];
+  const labels=[['输入层','4096维输入'],['隐藏层1','Dense·ReLU','Dropout'],['隐藏层2','Dense·ReLU','Dropout'],
+                ['隐藏层3','Dense·ReLU','Dropout'],['输出层','估值预测']];
+  const xs=layers.map((_,i)=>34+i*(W-58)/(layers.length-1));
+  const nodes=layers.map((n,li)=>{
+    const arr=[], span=Math.min(150, n*24), y0=(H-26-span)/2+8;
+    for(let i=0;i<n;i++) arr.push({x:xs[li], y:y0+span*(n===1?0.5:i/(n-1))});
+    return arr;
+  });
+  /* 边 */
+  const edges=[];
+  for(let l=0;l<layers.length-1;l++) for(const a of nodes[l]) for(const b of nodes[l+1]){
+    const e=document.createElementNS(NS,'line');
+    e.setAttribute('x1',a.x);e.setAttribute('y1',a.y);e.setAttribute('x2',b.x);e.setAttribute('y2',b.y);
+    e.setAttribute('stroke', l===layers.length-2 ? 'rgba(255,190,90,.28)' : 'rgba(90,180,255,.22)');
+    e.setAttribute('stroke-width','0.7');
+    svg.appendChild(e); edges.push(e);
+  }
+  /* 边流光（随机挑选部分边做 dash 流动） */
+  edges.forEach((e,i)=>{ if(i%5===0){
+    e.style.strokeDasharray='3 9';
+    e.style.animation=`edgeFlow ${1.6+Math.random()*2}s linear infinite`;
+  }});
+  const st=document.createElement('style');
+  st.textContent='@keyframes edgeFlow{to{stroke-dashoffset:-24;}}';
+  document.head.appendChild(st);
+  /* 节点 */
+  nodes.forEach((layer,li)=>layer.forEach((p,i)=>{
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r', li===layers.length-1?4.5:4);
+    const out = li===layers.length-1;
+    c.setAttribute('fill', out? '#ffbe5c' : '#3fb2ff');
+    c.style.filter = out? 'drop-shadow(0 0 5px rgba(255,190,90,.9))' : 'drop-shadow(0 0 4px rgba(80,190,255,.8))';
+    c.style.animation=`nodePulse ${2+Math.random()*2}s ease-in-out ${Math.random()*2}s infinite`;
+    svg.appendChild(c);
+  }));
+  const st2=document.createElement('style');
+  st2.textContent='@keyframes nodePulse{0%,100%{opacity:.65}50%{opacity:1}}';
+  document.head.appendChild(st2);
+  /* 层标签 */
+  labels.forEach((lb,li)=>{
+    lb.forEach((t,ri)=>{
+      const tx=document.createElementNS(NS,'text');
+      tx.setAttribute('x',xs[li]); tx.setAttribute('y', H-24+ri*10);
+      tx.setAttribute('text-anchor','middle');
+      tx.setAttribute('fill', ri===0? '#8fd4ff':'#5f88b6');
+      tx.setAttribute('font-size', ri===0? '9.5':'7.5');
+      tx.textContent=t; svg.appendChild(tx);
+    });
+  });
+  /* 信号脉冲：随机路径，输入层→输出层 */
+  function pulse(){
+    const path=nodes.map(layer=>layer[Math.floor(Math.random()*layer.length)]);
+    const dot=document.createElementNS(NS,'circle');
+    dot.setAttribute('r','2.6'); dot.setAttribute('fill','#eaf8ff');
+    dot.style.filter='drop-shadow(0 0 6px #9fe4ff)';
+    svg.appendChild(dot);
+    let seg=0, t0=performance.now(); const segDur=260;
+    function step(t){
+      if(seg>=path.length-1){ dot.remove(); return; }
+      const k=Math.min((t-t0)/segDur,1);
+      const a=path[seg], b=path[seg+1];
+      dot.setAttribute('cx', a.x+(b.x-a.x)*k);
+      dot.setAttribute('cy', a.y+(b.y-a.y)*k);
+      if(k===1){ seg++; t0=t; }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  setInterval(pulse, 700); pulse();
+})();
+
+/* ===== P5 估值分布：扫描线游走后落在 7.4 亿 ===== */
+(function buildDist(){
+  const svg=document.getElementById('distSvg'), NS='http://www.w3.org/2000/svg';
+  const W=252,H=118, padL=10,padR=10, baseY=92, topY=14;
+  const vMin=4, vMax=10, target=7.4;
+  const xOf=v=>padL+(v-vMin)/(vMax-vMin)*(W-padL-padR);
+  const mu=target, sigma=1.05;
+  const g=v=>Math.exp(-((v-mu)**2)/(2*sigma*sigma));
+  /* 曲线路径 */
+  let d='';
+  for(let i=0;i<=120;i++){
+    const v=vMin+(vMax-vMin)*i/120;
+    const x=xOf(v), y=baseY-(baseY-topY)*g(v);
+    d+=(i===0?'M':'L')+x.toFixed(1)+' '+y.toFixed(1);
+  }
+  /* 渐变填充 */
+  const defs=document.createElementNS(NS,'defs');
+  defs.innerHTML=`<linearGradient id="areaG" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#4db2f5" stop-opacity=".45"/>
+    <stop offset="1" stop-color="#4db2f5" stop-opacity=".02"/></linearGradient>
+    <linearGradient id="lineG" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#2f8fe0"/><stop offset=".57" stop-color="#8fe0ff"/><stop offset="1" stop-color="#2f8fe0"/></linearGradient>`;
+  svg.appendChild(defs);
+  const area=document.createElementNS(NS,'path');
+  area.setAttribute('d', d+`L${xOf(vMax)} ${baseY}L${xOf(vMin)} ${baseY}Z`);
+  area.setAttribute('fill','url(#areaG)'); svg.appendChild(area);
+  const curve=document.createElementNS(NS,'path');
+  curve.setAttribute('d',d); curve.setAttribute('fill','none');
+  curve.setAttribute('stroke','url(#lineG)'); curve.setAttribute('stroke-width','1.8');
+  svg.appendChild(curve);
+  /* 曲线描画动画 */
+  const len=curve.getTotalLength();
+  curve.style.strokeDasharray=len; curve.style.strokeDashoffset=len;
+  setTimeout(()=>{ curve.style.transition='stroke-dashoffset 2s ease'; curve.style.strokeDashoffset=0; },800);
+  /* 坐标轴与刻度 */
+  const axis=document.createElementNS(NS,'line');
+  axis.setAttribute('x1',padL);axis.setAttribute('x2',W-padR);
+  axis.setAttribute('y1',baseY);axis.setAttribute('y2',baseY);
+  axis.setAttribute('stroke','rgba(120,170,230,.5)'); svg.appendChild(axis);
+  [4,6,8,10].forEach(v=>{
+    const t=document.createElementNS(NS,'text');
+    t.setAttribute('x',xOf(v)); t.setAttribute('y',baseY+12);
+    t.setAttribute('text-anchor','middle'); t.setAttribute('fill','#6f96c4'); t.setAttribute('font-size','9.5');
+    t.textContent=v+'亿'; svg.appendChild(t);
+  });
+  /* 目标虚线 + 标签 */
+  const tx=xOf(target), ty=baseY-(baseY-topY)*g(target);
+  const guide=document.createElementNS(NS,'line');
+  guide.setAttribute('x1',tx);guide.setAttribute('x2',tx);
+  guide.setAttribute('y1',ty);guide.setAttribute('y2',baseY);
+  guide.setAttribute('stroke','#ffbe5c'); guide.setAttribute('stroke-width','1');
+  guide.setAttribute('stroke-dasharray','3 3'); guide.setAttribute('opacity','0');
+  svg.appendChild(guide);
+  const label=document.createElementNS(NS,'text');
+  label.setAttribute('x',tx); label.setAttribute('y',ty-6);
+  label.setAttribute('text-anchor','middle'); label.setAttribute('fill','#ffbe5c');
+  label.setAttribute('font-size','11'); label.setAttribute('font-weight','bold');
+  label.setAttribute('opacity','0'); label.textContent='7.4亿';
+  svg.appendChild(label);
+  /* 游标（竖线 + 读数） */
+  const cursor=document.createElementNS(NS,'line');
+  cursor.setAttribute('y1',topY-2); cursor.setAttribute('y2',baseY);
+  cursor.setAttribute('stroke','#dff2ff'); cursor.setAttribute('stroke-width','1.4');
+  cursor.style.filter='drop-shadow(0 0 5px rgba(160,225,255,.95))';
+  svg.appendChild(cursor);
+  const readout=document.createElementNS(NS,'text');
+  readout.setAttribute('y',topY-6); readout.setAttribute('text-anchor','middle');
+  readout.setAttribute('fill','#dff2ff'); readout.setAttribute('font-size','9.5');
+  readout.setAttribute('font-family','Consolas,monospace');
+  svg.appendChild(readout);
+
+  /* 动画：两次往复扫描 → 减速逼近 → 落定 7.4 亿，随后轻微呼吸 */
+  const T0=1400;
+  function posAt(t){
+    const t1=2600, t2=2600, t3=1800;               // 三段时长
+    if(t<t1){                                       // 快速左右扫
+      const k=t/t1, s=Math.sin(k*Math.PI*2.6);
+      return target + s*2.6*(1-k*0.35);
+    }
+    t-=t1;
+    if(t<t2){                                       // 衰减振荡
+      const k=t/t2, s=Math.sin(k*Math.PI*3.2)*Math.exp(-2.2*k);
+      return target + s*1.6;
+    }
+    t-=t2;
+    if(t<t3){                                       // 缓动落定
+      const k=t/t3, e=1-Math.pow(1-k,3);
+      const start=target+Math.sin(Math.PI*3.2)*Math.exp(-2.2)*1.6;
+      return start+(target-start)*e;
+    }
+    const idle=(t-t3)/1000;                         // 落定后微幅呼吸
+    return target + Math.sin(idle*1.4)*0.03;
+  }
+  function frame(now){
+    const t=now-startT;
+    const v=posAt(t), x=xOf(v);
+    cursor.setAttribute('x1',x); cursor.setAttribute('x2',x);
+    readout.setAttribute('x', Math.max(22, Math.min(W-22, x)));
+    readout.textContent = v.toFixed(1)+'亿';
+    const settled = t> T0? false:false;
+    if(t>6000){                                     // 落定后显示目标虚线与标签
+      guide.setAttribute('opacity','.9'); label.setAttribute('opacity','1');
+      readout.setAttribute('fill','#ffbe5c');
+      const pulse=0.75+0.25*Math.sin(now/300);
+      label.setAttribute('opacity', pulse);
+    }
+    requestAnimationFrame(frame);
+  }
+  let startT;
+  setTimeout(()=>{ startT=performance.now(); requestAnimationFrame(frame); }, T0);
+})();
+</script>
+</body>
+</html>

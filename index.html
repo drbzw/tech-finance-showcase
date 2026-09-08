@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
+<html lang="zh-CN" data-page-node-id="HeOz84jbKVVlNpwugWEwkE">
+<head data-page-node-id="5G2VlQh6uQyVCS6YP3iusE">
+  <meta charset="utf-8" data-page-node-id="9fcn8qFkcZMxPpj0QRrnIB">
+  <meta name="viewport" content="width=device-width, initial-scale=1" data-page-node-id="kXqfFgUeMPr8gBu2HdP9qo">
+  <meta name="color-scheme" content="dark" data-page-node-id="GnJJMAUx74gIdf0ViUJOz6">
   <title>科技型中小企业估值成果 · 16:9大屏</title>
   <style>
     :root {
@@ -37,20 +37,20 @@
         var(--bg);
       background-size: auto, 42px 42px, 42px 42px, auto;
     }
-    .head { display: flex; align-items: center; gap: 18px; height: 72px; flex: none;
+    .head { display: flex; align-items: center; gap: 18px; height: 82px; flex: none;
       border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
       background: linear-gradient(90deg, transparent, rgba(13, 61, 119, .22), transparent); padding: 0 10px; }
     .head .t { flex: 1; text-align: center; }
-    .eyebrow { color: var(--cyan); font-size: 11px; letter-spacing: .24em; margin-bottom: 3px; }
-    h1 { font-size: 34px; letter-spacing: .06em; font-weight: 800; text-shadow: 0 0 26px rgba(46, 215, 255, .3); }
+    .eyebrow { color: var(--cyan); font-size: 13px; letter-spacing: .24em; margin-bottom: 3px; }
+    h1 { font-size: 38px; letter-spacing: .06em; font-weight: 800; text-shadow: 0 0 26px rgba(46, 215, 255, .3); }
     .badges { display: flex; gap: 8px; }
-    .scope-badge { padding: 4px 11px; border: 1px solid currentColor; border-radius: 16px; font-size: 11px; white-space: nowrap; }
+    .scope-badge { padding: 4px 11px; border: 1px solid currentColor; border-radius: 16px; font-size: 13px; white-space: nowrap; }
     .scope-badge.verified { color: var(--green); background: rgba(49, 224, 174, .08); }
     .scope-badge.demo { color: var(--amber); background: rgba(255, 190, 85, .08); }
     .scope-badge.roadmap { color: var(--violet); background: rgba(138, 110, 244, .1); }
 
-    .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; height: 96px; flex: none; }
-    .kpi { display: grid; grid-template-columns: 42px 1fr; gap: 10px; align-items: center;
+    .kpis { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; height: 112px; flex: none; }
+    .kpi { display: grid; grid-template-columns: 50px 1fr; gap: 10px; align-items: center;
       padding: 10px 12px; border: 1px solid var(--line); position: relative; overflow: hidden;
       background: linear-gradient(145deg, var(--panel), rgba(3, 17, 38, .93)); }
     .kpi::after { content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -58,26 +58,27 @@
       transform: translateX(-110%); }
     .kpi.lit::after { animation: sheen 1.2s ease; }
     @keyframes sheen { to { transform: translateX(110%); } }
-    .kpi i { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%;
-      font-style: normal; font-weight: 700; color: #eefdff;
+    .kpi i { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 50%;
+      font-style: normal; font-weight: 700; font-size: 18px; color: #eefdff;
       background: radial-gradient(circle, #2d8eff, #164b9e 65%, rgba(42, 159, 255, .15) 67%); }
-    .kpi p { color: var(--muted); font-size: 11px; margin-bottom: 2px; }
-    .kpi strong { font-family: "Arial Narrow", Arial, sans-serif; font-size: 25px; }
-    .kpi small { display: block; color: var(--muted); font-size: 10px; }
+    .kpi p { color: var(--muted); font-size: 13px; margin-bottom: 2px; }
+    .kpi strong { font-family: "Arial Narrow", Arial, sans-serif; font-size: 30px; }
+    .kpi small { display: block; color: var(--muted); font-size: 11.5px; }
+    #kpiHit .kpi-sub { color: var(--green); font-weight: 700; }
 
-    .main { display: grid; grid-template-columns: 1.12fr 1fr 1.08fr; gap: 10px; flex: 1; min-height: 0; }
+    .main { display: grid; grid-template-columns: 0.98fr 1.14fr 1.04fr; gap: 10px; flex: 1; min-height: 0; }
     .col { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
     .panel { border: 1px solid var(--line); padding: 12px 14px; min-height: 0;
       background: linear-gradient(145deg, var(--panel), rgba(3, 17, 38, .93)); overflow: hidden; }
-    .kicker { color: var(--cyan); font-size: 10px; letter-spacing: .16em; margin-bottom: 4px; }
-    .ptitle { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
-    .ptitle small { color: var(--muted); font-weight: 400; font-size: 11px; margin-left: 8px; }
-    table.t { width: 100%; border-collapse: collapse; font-size: 12px; }
-    table.t th { color: #79cfff; font-weight: 500; text-align: left; padding: 5px 8px;
+    .kicker { color: var(--cyan); font-size: 12px; letter-spacing: .16em; margin-bottom: 4px; }
+    .ptitle { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .ptitle small { color: var(--muted); font-weight: 400; font-size: 13px; margin-left: 8px; }
+    table.t { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+    table.t th { color: #79cfff; font-weight: 500; text-align: left; padding: 6px 9px;
       border-bottom: 1px solid rgba(84, 147, 201, .25); white-space: nowrap; background: rgba(21, 80, 139, .26); }
-    table.t td { padding: 5px 8px; border-bottom: 1px solid rgba(84, 147, 201, .1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+    table.t td { padding: 6px 9px; border-bottom: 1px solid rgba(84, 147, 201, .1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
     td.n, th.n { text-align: right; font-family: "Arial Narrow", Arial, sans-serif; }
-    .lbl { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+    .lbl { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 12px; font-weight: 600; }
     .lbl.demo { color: #fff3df; background: rgba(255, 190, 85, .16); border: 1px solid rgba(255, 190, 85, .5); }
     .bar-track { display: block; height: 6px; background: rgba(65, 113, 163, .18); }
     .bar-fill { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--cyan));
@@ -91,14 +92,29 @@
     .citymini::before { content: "点击查看详情"; position: absolute; top: 8px; right: 10px;
       font-size: 9px; color: var(--cyan); opacity: 0; transition: opacity .3s; pointer-events: none; }
     .citymini:hover::before { opacity: .7; }
-    .citymini h4 { font-size: 14px; margin-bottom: 4px; }
-    .citymini h4 small { color: var(--muted); font-weight: 400; font-size: 10px; margin-left: 6px; }
+    .citymini h4 { font-size: 17px; margin-bottom: 4px; }
+    .citymini h4 small { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: 6px; }
     .ck { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 5px; }
     .ck div { background: rgba(7, 30, 62, .55); padding: 4px 7px; }
-    .ck span { display: block; color: var(--muted); font-size: 10px; }
-    .ck strong { font: 15px "Arial Narrow", Arial, sans-serif; color: #dff8ff; }
-    .citymini table.t { font-size: 11px; }
-    .citymini table.t td, .citymini table.t th { padding: 3px 6px; }
+    .ck span { display: block; color: var(--muted); font-size: 12px; }
+    .ck strong { font: 18px "Arial Narrow", Arial, sans-serif; color: #dff8ff; }
+    .citymini table.t { font-size: 13px; }
+    .citymini table.t td, .citymini table.t th { padding: 4px 7px; }
+    .citymini { padding: 6px 10px; }
+    .citymini h4 { font-size: 15px; line-height: 20px; margin-bottom: 3px; white-space: nowrap; }
+    .citymini h4 small { font-size: 11px; }
+    .citymini .city-header { flex: none; }
+    .citymini .ck { grid-template-columns: 1fr 1fr; margin-bottom: 4px; }
+    .citymini .ck > div { display: flex; align-items: baseline; gap: 10px; padding: 2px 6px; }
+    .citymini .ck span { display: inline; }
+    .citymini .ck strong { font-size: 16px; }
+    .citymini .mq-head { flex: none; padding: 2px 8px; font-size: 12px; }
+    .citymini .marquee { min-height: 58px; }
+    .citymini .marquee::after { height: 8px; }
+    .citymini .mq-row { min-height: 29px; padding: 5px 8px; font-size: 13px; line-height: 19px; }
+    .citymini .mq-row span:nth-child(2) { min-width: 0; }
+    .citymini:hover .marquee-track, .citymini:focus-within .marquee-track { animation-play-state: paused; }
+    .citymini .mq-row:focus-visible { outline: 1px solid var(--cyan); outline-offset: -2px; background: rgba(46, 215, 255, .15); }
 
     #trendSvg { width: 100%; height: 100%; display: block; }
     .trend-line { fill: none; stroke-width: 2.2; }
@@ -124,8 +140,8 @@
     .trial-note { margin-top: 7px; font-size: 10.5px; color: var(--muted);
       border-top: 1px dashed rgba(84, 147, 201, .25); padding-top: 6px; }
 
-    .foot { flex: none; height: 34px; display: flex; align-items: center; gap: 14px;
-      border-top: 1px solid rgba(90, 159, 216, .25); color: var(--muted); font-size: 11px;
+    .foot { flex: none; height: 40px; display: flex; align-items: center; gap: 14px;
+      border-top: 1px solid rgba(90, 159, 216, .25); color: var(--muted); font-size: 13px;
       white-space: nowrap; overflow: hidden; }
     .foot strong { color: var(--amber); }
 
@@ -143,11 +159,11 @@
     tr.spot { transform: translateX(6px); }
     tr.spot td:first-child { color: var(--cyan); }
     table.t tbody tr { transition: transform .45s ease; }
-    .clock { color: var(--cyan); font-family: "Arial Narrow", Arial, sans-serif; font-size: 20px; letter-spacing: .06em; }
+    .clock { color: var(--cyan); font-family: "Arial Narrow", Arial, sans-serif; font-size: 24px; letter-spacing: .06em; }
     .panel { display: flex; flex-direction: column; }
     .mq-head, .mq-row { display: grid; gap: 8px; align-items: center; }
-    .mq-head { color: #79cfff; font-size: 11px; padding: 5px 8px; border-bottom: 1px solid rgba(84, 147, 201, .25); background: rgba(21, 80, 139, .26); white-space: nowrap; }
-    .mq-row { padding: 5px 8px; border-bottom: 1px solid rgba(84, 147, 201, .1); font-size: 12px; white-space: nowrap; }
+    .mq-head { color: #79cfff; font-size: 13px; padding: 5px 8px; border-bottom: 1px solid rgba(84, 147, 201, .25); background: rgba(21, 80, 139, .26); white-space: nowrap; }
+    .mq-row { padding: 5px 8px; border-bottom: 1px solid rgba(84, 147, 201, .1); font-size: 14px; white-space: nowrap; }
     .mq-row span:nth-child(2), .ck .rep, .citymini td:nth-child(2) { overflow: hidden; text-overflow: ellipsis; }
     #miniMap path { transition: fill .8s ease; }
     #miniMap path.top-glow { filter: drop-shadow(0 0 7px rgba(46, 215, 255, .9)); }
@@ -181,90 +197,122 @@
       border: 2px solid var(--cyan); border-radius: 10px; padding: 28px; overflow-y: auto;
       box-shadow: 0 20px 80px rgba(0, 0, 0, .7); animation: modalSlideIn .4s ease; }
     @keyframes modalSlideIn { from { opacity: 0; transform: translateY(-30px) scale(.95); } }
-    .modal-card h3 { font-size: 22px; margin-bottom: 8px; color: var(--cyan); }
-    .modal-card .meta { color: var(--muted); font-size: 13px; margin-bottom: 20px; padding-bottom: 12px;
+    .modal-card h3 { font-size: 24px; margin-bottom: 8px; color: var(--cyan); }
+    .modal-card .meta { color: var(--muted); font-size: 14.5px; margin-bottom: 20px; padding-bottom: 12px;
       border-bottom: 1px solid rgba(84, 147, 201, .2); }
     .modal-card .field { margin-bottom: 18px; }
-    .modal-card .field label { display: block; color: var(--cyan); font-size: 12px; font-weight: 600;
+    .modal-card .field label { display: block; color: var(--cyan); font-size: 13.5px; font-weight: 600;
       margin-bottom: 6px; letter-spacing: .05em; }
-    .modal-card .field .value { color: #e7f4ff; line-height: 1.7; font-size: 13px; }
+    .modal-card .field .value { color: #e7f4ff; line-height: 1.7; font-size: 14.5px; }
     .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
       border: 1px solid var(--line); border-radius: 50%; background: rgba(7, 27, 55, .8);
       color: var(--muted); cursor: pointer; display: grid; place-items: center; font-size: 20px;
       transition: all .3s; }
     .modal-close:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(46, 215, 255, .1); }
 
+    /* Tech Pipeline Thumbnail */
+    .tech-thumb { cursor: pointer; transition: all .3s ease; position: relative; }
+    .tech-thumb:hover { border-color: var(--cyan); box-shadow: 0 0 26px rgba(46, 215, 255, .35); transform: translateY(-2px); }
+    .tech-thumb::after { content: "点击打开完整动态演示 ➜"; position: absolute; top: 12px; right: 14px;
+      font-size: 12px; color: var(--cyan); opacity: .55; transition: opacity .3s; pointer-events: none; }
+    .tech-thumb:hover::after { opacity: 1; }
+    .thumb-nn { flex: 1; min-height: 0; }
+    .thumb-nn svg { width: 100%; height: 100%; display: block; }
+    .thumb-steps { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 4px;
+      padding-top: 10px; border-top: 1px dashed rgba(84, 147, 201, .25); font-size: 13.5px; color: #d6ecff; white-space: nowrap; }
+    .thumb-steps .arr { color: var(--cyan); font-weight: 700; animation: arrGlow 1.8s ease-in-out infinite; }
+    @keyframes arrGlow { 0%,100% { opacity: .45; } 50% { opacity: 1; text-shadow: 0 0 8px rgba(46,215,255,.9); } }
+    @keyframes thumbPulse { 0%,100% { opacity: .65; } 50% { opacity: 1; } }
+
+    /* Hit-rate KPI: integrated display */
+    #kpiHit .kv { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .hit-pill { font-size: 13px; font-weight: 800; color: var(--green); font-family: "Microsoft YaHei", sans-serif;
+      padding: 2px 9px; border-radius: 10px; border: 1px solid rgba(49, 224, 174, .65);
+      background: rgba(49, 224, 174, .14); white-space: nowrap;
+      animation: pillGlow 2.6s ease-in-out infinite; }
+    @keyframes pillGlow { 0%,100% { box-shadow: 0 0 4px rgba(49,224,174,.2); } 50% { box-shadow: 0 0 12px rgba(49,224,174,.55); } }
+
+    /* Pipeline modal (iframe) */
+    .pipe-card { width: min(1720px, 94vw); height: min(950px, 92vh); max-height: 92vh; padding: 8px; }
+    .pipe-card iframe { width: 100%; height: 100%; border: none; border-radius: 6px; background: #02081a; display: block; }
+
     /* Clickable Company Names */
     .mq-row, .citymini td, #bjTop td { cursor: pointer; }
     .mq-row:hover, .citymini tr:hover, #bjTop tr:hover { background: rgba(46, 215, 255, .1); }
   </style>
 </head>
-<body>
-<div id="fit"><div id="stage">
-  <header class="head">
-    <div style="width:220px"><div class="clock" id="clock">--:--:--</div><div style="color:var(--muted);font-size:11px" id="dateLine"></div></div>
-    <div class="t">
-      <div class="eyebrow">TECH-BASED SME VALUATION SHOWCASE</div>
-      <h1>科技型中小企业估值成果展示</h1>
+<body data-page-node-id="zb6VYLgrD3S2IQN3fKqzpb">
+<div id="fit" data-page-node-id="2H9GlGfuAMRJTZiTA3CPAC"><div id="stage" data-page-node-id="IfplFRzX5vMqI60gIF7sZL">
+  <header class="head" data-page-node-id="zMEOIHfTdnrZeAISOS6UP1">
+    <div style="width:220px" data-page-node-id="HIXLOoNVwBsxGTk2MFQFh8"><div class="clock" id="clock" data-page-node-id="d0jvuh9Z3dAbYkXUssZj8U">--:--:--</div><div style="color:var(--muted);font-size:11px" id="dateLine" data-page-node-id="No6N1r5CpSJ7oYpjSzQH7W"></div></div>
+    <div class="t" data-page-node-id="jmC9fXDQQgTTgQfPVamT3c">
+      <div class="eyebrow" data-page-node-id="ieotPKyY8J31sIzX0XcJim">TECH-BASED SME VALUATION SHOWCASE</div>
+      <h1 data-page-node-id="FDSYGKyyRTUe5Zn7r2cF6H">科技型中小企业估值成果展示</h1>
     </div>
-    <div class="badges" style="width:220px;flex-wrap:wrap;justify-content:flex-end">
-      <span class="scope-badge verified">已验证·命中率65.7%</span>
-      <span class="scope-badge demo">实时数据·智能估值</span>
+    <div class="badges" style="width:220px;flex-wrap:wrap;justify-content:flex-end" data-page-node-id="cCpGPuMJgu43Eot9n0mler">
+      <span class="scope-badge verified" data-page-node-id="0wyRGUiPv5arX8F97vLNMB">已验证·1–3亿区间命中率90%+</span>
+      <span class="scope-badge demo" data-page-node-id="6tnimXl9KuB3nPdGSm3LR3">实时数据·智能估值</span>
     </div>
   </header>
 
   <!-- Modal for Company Details -->
-  <div class="modal" id="modal">
-    <div class="modal-card" style="position:relative">
-      <div class="modal-close" onclick="document.getElementById('modal').classList.remove('show')">×</div>
-      <div id="modalContent"></div>
+  <div class="modal" id="modal" data-page-node-id="HcWpClDFt5bOcuTPHVPT0R">
+    <div class="modal-card" style="position:relative" data-page-node-id="LH4A3lF7rSfpFlEiz7Fk8k">
+      <div class="modal-close" onclick="document.getElementById('modal').classList.remove('show')" data-page-node-id="OBmD0AJDP5ZgYboHj0yJaP">×</div>
+      <div id="modalContent" data-page-node-id="kCWtharZsUEn0vU5fBIiwp"></div>
     </div>
   </div>
 
-  <section class="kpis" id="kpiRow"></section>
+  <!-- Modal for Tech Pipeline -->
+  <div class="modal" id="pipeModal">
+    <div class="modal-card pipe-card" style="position:relative">
+      <div class="modal-close" onclick="closePipe()">×</div>
+      <iframe id="pipeFrame" title="企业估值神经网络训练技术路线"></iframe>
+    </div>
+  </div>
 
-  <div class="main">
-    <div class="col" id="cityCol"></div>
-    <div class="col">
-      <div class="panel rv" style="flex:1">
-        <div class="kicker" id="bjDistKicker">BEIJING DISTRICTS · 北京分区潜力（2024在库）</div>
-        <div class="ptitle">分区潜力 <small>潜力企业估值≥1亿</small></div>
-        <div style="flex:none;display:grid;grid-template-columns:1.12fr 1fr;gap:12px;align-items:stretch">
-          <div style="min-width:0;border:1px solid rgba(84,147,201,.18);background:rgba(7,30,62,.55);padding:8px 10px"><div id="bjDist"></div></div>
-          <div style="min-width:0;display:flex;flex-direction:column;border:1px solid rgba(84,147,201,.18);background:rgba(7,30,62,.55);padding:8px 10px">
-            <div class="kicker">BEIJING MAP · 分区潜力着色 <span class="map-year" id="mapYear">2024</span></div>
-            <div style="flex:1;min-height:0"><svg id="miniMap" viewBox="0 0 560 250" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <section class="kpis" id="kpiRow" data-page-node-id="TMTLxn9nmMvx2moEAbEDa7"></section>
+
+  <div class="main" data-page-node-id="BoMQ1VDmhtiqDIuSVjWOyP">
+    <div class="col" id="cityCol" data-page-node-id="K1ZWF3dwfZDBaGliJrhokd"></div>
+    <div class="col" data-page-node-id="MlULYXLvltZiy7xO2IMwDo">
+      <div class="panel rv" style="flex:1" data-page-node-id="QbZgV3SQdMyVaEWl5ga58S">
+        <div class="kicker" id="bjDistKicker" data-page-node-id="FPtnoPpxugDXcoyRNKb1fu">BEIJING DISTRICTS · 北京分区潜力（2024在库）</div>
+        <div class="ptitle" data-page-node-id="7vz0TG5icYiCHRmOZg3qfb">分区潜力 <small data-page-node-id="iwXAisyaGvRcuxm1ACGxWN">潜力企业估值≥1亿</small></div>
+        <div style="flex:none;display:grid;grid-template-columns:1fr 1.14fr;gap:12px;align-items:stretch" data-page-node-id="BVqKoRDjqvBWrHut9AVGkS">
+          <div style="min-width:0;border:1px solid rgba(84,147,201,.18);background:rgba(7,30,62,.55);padding:8px 10px" data-page-node-id="qzn5VX2xkz6RcFQwTFiaEf"><div id="bjDist" data-page-node-id="RPUKTdrwq5fB1TkzfmUcIM"></div></div>
+          <div style="min-width:0;display:flex;flex-direction:column;border:1px solid rgba(84,147,201,.18);background:rgba(7,30,62,.55);padding:8px 10px" data-page-node-id="TjFKqUj5CVIpC2IOjApwDZ">
+            <div class="kicker" data-page-node-id="ZHszuhMzWHaU2ZoEzRAS6d">BEIJING MAP · 分区潜力着色 <span class="map-year" id="mapYear" data-page-node-id="FWO7uib8blLUjmcU5hOAbI">2024</span></div>
+            <div style="flex:1;min-height:0" data-page-node-id="TlDuqzx0Inn65Ny2nYBXEI"><svg id="miniMap" viewBox="0 0 560 250" preserveAspectRatio="xMidYMid meet" data-page-node-id="Y0sYgEWJLwo4b1jrS8H7QB"></svg></div>
           </div>
         </div>
-        <div style="height:1px;background:rgba(84,147,201,.25);margin:10px 0"></div>
-        <div class="kicker">BEIJING LEADERS · 北京头部企业</div>
-        <div class="ptitle">头部企业 <small>按估值排序</small></div>
-        <div id="bjTop" style="flex:1;min-height:0;display:flex;flex-direction:column"></div>
+        <div style="height:1px;background:rgba(84,147,201,.25);margin:10px 0" data-page-node-id="5iTULfODj4g99CU8gLgUCj"></div>
+        <div class="kicker" data-page-node-id="sfpHFKtrJ5Qplx7nekso6c">BEIJING LEADERS · 北京头部企业</div>
+        <div class="ptitle" data-page-node-id="bp8HqBDHhSnc5ECssch9Kw">头部企业 <small data-page-node-id="EC4cpsXYSrJLDkbTOes3i5">按估值排序</small></div>
+        <div id="bjTop" style="flex:1;min-height:0;display:flex;flex-direction:column" data-page-node-id="x0ylqKsBOZYHqW77XvJMSU"></div>
       </div>
     </div>
-    <div class="col">
-      <div class="panel rv" style="flex:1">
-        <div class="kicker">YEARLY STOCK · 六城年度在库趋势</div>
-        <svg id="trendSvg" viewBox="0 0 560 210" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="col" data-page-node-id="WqmhqM9SQ3uhI5Z936ajxV">
+      <div class="panel rv" style="flex:1" data-page-node-id="ldbf9C5qG05ZDbYFhFtNpA">
+        <div class="kicker" data-page-node-id="aPNyfrU6CsSpgf6gRijtW4">YEARLY STOCK · 六城年度在库趋势</div>
+        <svg id="trendSvg" viewBox="0 0 560 210" preserveAspectRatio="xMidYMid meet" data-page-node-id="nZTUGUmUMhT4QOt6VgHysL"></svg>
       </div>
-      <div class="panel rv method-strip" style="flex:.35" id="methodStrip"></div>
-      <div class="panel rv" style="flex:1.05">
-        <div class="kicker">LIVE TRY · 一键试算<span style="color:var(--muted);letter-spacing:0;margin-left:8px">演示口径 · 多因子简版</span></div>
-        <div class="trial">
-          <input id="q_name" placeholder="企业名称">
-          <select id="q_ind"><option>电子信息与半导体</option><option>软件与IT服务</option><option>机械设备</option><option>材料与化工</option><option>医药医疗</option><option>消费与其它</option></select>
-          <input id="q_rev" type="number" placeholder="年收入（万元）*" style="width:120px">
-          <select id="q_city" style="width:104px"><option>北京市</option><option>上海市</option><option>深圳市</option><option>广州市</option><option>南京市</option><option>杭州市</option></select>
-          <input id="q_yrs" type="number" min="0" max="8" placeholder="入库年限" style="width:88px">
-          <input id="q_pat" type="number" min="0" placeholder="专利数" style="width:80px">
-          <button id="q_go" type="button">测算</button>
+      <div class="panel rv tech-thumb" style="flex:1.4" id="techThumb" title="点击查看完整技术路线" data-page-node-id="uLwV1mDeIMZBEodULmQI2c">
+        <div class="kicker" data-page-node-id="nU2Oy5hYeORgzpjPZRrC4K">TECH PIPELINE · 估值技术路线</div>
+        <div class="ptitle" data-page-node-id="6ACbH1id4KWtvvmg7LMr29">企业估值神经网络训练技术路线 <small data-page-node-id="lBTTukmi9Wev0u7ulxsImI">Qwen3.5-9B 微调 + 多因子量化</small></div>
+        <div class="thumb-nn" data-page-node-id="wbjlV19JhFLKl7KZMQkBxa"><svg id="thumbNn" viewBox="0 0 520 260" preserveAspectRatio="xMidYMid meet" data-page-node-id="WzhfW2bi54JjayMyX6bRMO"></svg></div>
+        <div class="thumb-steps" data-page-node-id="eKYyzLNhV5dGlD1RazHfEj">
+          <span data-page-node-id="ubfywN2cfevuZn74Xp5ma0">多源数据</span><span class="arr" data-page-node-id="EEtrtQIfWGZgNgUrV3av42">➜</span>
+          <span data-page-node-id="WHUi6YHtxpKRSReOfYolf1">企业画像</span><span class="arr" data-page-node-id="oLu0novzHrNkKDP3bOAjSc">➜</span>
+          <span data-page-node-id="8zF9rCpUbwZEO2RCpnMlBp">Embedding向量化</span><span class="arr" data-page-node-id="aXEwuzkaQyc0Sf7t6ncPgQ">➜</span>
+          <span data-page-node-id="LyO25RXaEgpmCrCigtBxyz">神经网络训练</span><span class="arr" data-page-node-id="KoaBE3HTiNEiArDpvFcOer">➜</span>
+          <span data-page-node-id="vLTtTlZ3wKZ4jnNU9JVP11">估值输出</span>
         </div>
-        <div class="trial-out" id="q_out">填写收入、年限、专利并点击「测算」，按多因子简版方法演示。</div>
       </div>
     </div>
   </div>
 
-  <footer class="foot" id="footLine"></footer>
+  <footer class="foot" id="footLine" data-page-node-id="9CXep0hUktCf2iRiWJMfpb"></footer>
 </div></div>
 
 <script src="src/assets/maps.js"></script>
@@ -284,6 +332,15 @@ function fit() {
   stage.style.transform = `scale(${s})`; stage.style.transformOrigin = "top left";
 }
 window.addEventListener("resize", fit);
+
+function openPipe() {
+  document.getElementById("pipeFrame").src = "pipeline.html";
+  document.getElementById("pipeModal").classList.add("show");
+}
+function closePipe() {
+  document.getElementById("pipeModal").classList.remove("show");
+  setTimeout(() => { document.getElementById("pipeFrame").src = "about:blank"; }, 300);
+}
 
 function countUp(el, target, money) {
   const t0 = performance.now(), dur = 1200;
@@ -311,11 +368,15 @@ function boot(D) {
     ["库", "北京2024在库", bj.yearly["2024"], "家", "当年在库·含延续", "kpiStock"],
     ["潜", "北京潜力估计", bj.hp2024, "家", "2024在库中估计值≥1亿", "kpiHp"],
     ["区", "覆盖行政区", bj.districts.length, "个", "2024年在库分区", "kpiDist"],
-    ["证", "样本外命中率", "65.7%", null, "NEEQ回测·0.5×–2×", "kpiHit"],
+    ["证", "样本外命中率", "65.7%", null, "NEEQ回测·0.5×–2×（143个验证事件）", "kpiHit"],
     ["档", "信息档位", "P0–P4", null, "由少到多渐进输入", "kpiTier"]
   ];
   $("#kpiRow").innerHTML = kpis.map(([ic, lab, v, u, sub, id]) =>
     `<div class="kpi rv" id="${id}"><i>${ic}</i><div><p class="kpi-lab">${lab}</p><strong class="kv" data-v="${typeof v === "number" ? v : ""}">${typeof v === "number" ? "0" : esc(v)}</strong>${u ? `<small>${esc(u)}</small>` : ""}<small class="kpi-sub">${esc(sub)}</small></div></div>`).join("");
+
+  // Hit-rate KPI: integrate overall 65.7% with the 1–3亿 band figure in one visual unit
+  const hitKv = document.querySelector("#kpiHit .kv");
+  if (hitKv) hitKv.innerHTML = `65.7%<span class="hit-pill">1–3亿区间 90%+</span>`;
 
   function updateKpis(year) {
     const stock = bj.yearly[String(year)] || 0;
@@ -369,9 +430,9 @@ function boot(D) {
     `<div class="citymini rv" data-city="${esc(c.name)}">
       <div class="city-header" style="cursor:pointer">
         <h4>${esc(c.name)}<small>累计${fmtN(c.total_unique)} · 在库${fmtN(c.yearly["2024"])} · 潜力${fmtN(c.hp2024)}</small></h4>
-        <div class="ck"><div><span>中位估值</span><strong>${fmtY(c.median_est)}</strong></div><div><span>潜力占比</span><strong>${(c.hp_share * 100).toFixed(0)}%</strong></div><div><span>代表·1</span><strong class="rep" style="font-size:12px">${esc(c.top[0].name.slice(0, 9))}</strong></div><div><span>估值</span><strong>${fmtY(c.top[0].est)}</strong></div></div>
+        <div class="ck"><div><span>中位估值</span><strong>${fmtY(c.median_est)}</strong></div><div><span>潜力占比</span><strong>${(c.hp_share * 100).toFixed(0)}%</strong></div></div>
       </div>
-      ${marquee(c.top.slice(1, 13).map((r, i) => `<div class="mq-row" style="grid-template-columns:30px 1fr 86px"><span class="n">${i + 2}</span><span>${esc(r.name)}</span><span class="n">${fmtY(r.est)}</span></div>`).join(""), "30px 1fr 86px", 30)}
+      ${marquee(c.top.slice(0, 13).map((r, i) => `<div class="mq-row" role="button" tabindex="0" title="${esc(r.name)} · 点击查看详情" style="grid-template-columns:22px minmax(0,1fr) 70px"><span class="n">${i + 1}</span><span>${esc(r.name)}</span><span class="n">${fmtY(r.est)}</span></div>`).join(""), "22px minmax(0,1fr) 70px", 7.5)}
     </div>`).join("");
 
   // City Detail Modal (delegated click - see document handler below)
@@ -406,38 +467,55 @@ function boot(D) {
     $("#modal").classList.add("show");
   }
 
-  // Histogram with auto-animation (start from 2018 since 2017 has low data)
+  // Histogram with smooth grow/shrink transitions between years
   const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024];
   let currentYearIdx = years.length - 1; // Start at 2024
+  const hist = { inited: false, cur: [], anim: null };
 
   function drawHistogram(yearIdx) {
     const year = years[yearIdx];
     const W = 560, H = 210, L = 50, R = 10, T = 54, B = 50;
     const barW = (W - L - R) / D.cities.length - 8;
-    const max = Math.max(1, ...D.cities.map(c => c.yearly[String(year)] || 0));
+    // Share one scale across years so the existing bars never jump on a year change.
+    const max = Math.max(1, ...D.cities.flatMap(c => years.map(y => c.yearly[String(y)] || 0)));
     const Y = v => H - B - (v / max) * (H - T - B);
+    const svg = $("#trendSvg");
 
-    let s = `<text x="${W/2}" y="20" text-anchor="middle" fill="var(--cyan)" font-size="14" font-weight="700">${year}年度在库企业数</text>`;
-    s += `<line x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}" stroke="rgba(121,180,226,.3)" stroke-width="1"/>`;
+    if (!hist.inited) {
+      let s = `<text id="histTitle" x="${W / 2}" y="20" text-anchor="middle" fill="var(--cyan)" font-size="16" font-weight="700"></text>`;
+      s += `<line x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}" stroke="rgba(121,180,226,.3)" stroke-width="1"/>`;
+      D.cities.forEach((c, i) => {
+        const x = L + i * ((W - L - R) / D.cities.length);
+        s += `<rect class="hist-bar" x="${x}" y="${H - B}" width="${barW}" height="1" fill="${CITY_COLORS[c.name]}" opacity="0.85"></rect>`;
+        s += `<text class="hist-val" x="${x + barW / 2}" y="${H - B - 8}" text-anchor="middle" fill="var(--cyan)" font-size="15" font-family="Arial"></text>`;
+        s += `<text x="${x + barW / 2}" y="${H - B + 20}" text-anchor="middle" fill="var(--text)" font-size="13.5">${c.name.replace('市', '')}</text>`;
+      });
+      svg.innerHTML = s;
+      hist.inited = true;
+      hist.cur = D.cities.map(c => c.yearly[String(year)] || 0);
+    }
 
-    D.cities.forEach((c, i) => {
-      const val = c.yearly[String(year)] || 0;
-      const x = L + i * ((W - L - R) / D.cities.length);
-      const barH = H - B - Y(val);
-      const aboveY = Y(val) - 8;
-      const inside = aboveY < 30;
-      const lblY = inside ? Y(val) + 16 : aboveY;
-      const lblFill = inside ? "#ffffff" : "var(--cyan)";
-
-      s += `<rect x="${x}" y="${Y(val)}" width="${barW}" height="${Math.max(1, barH)}" fill="${CITY_COLORS[c.name]}" opacity="0.85">
-        <animate attributeName="height" from="0" to="${Math.max(1, barH)}" dur="0.8s" fill="freeze"/>
-        <animate attributeName="y" from="${H-B}" to="${Y(val)}" dur="0.8s" fill="freeze"/>
-      </rect>`;
-      s += `<text x="${x + barW/2}" y="${lblY}" text-anchor="middle" fill="${lblFill}" font-size="13" font-family="Arial">${fmtN(val)}</text>`;
-      s += `<text x="${x + barW/2}" y="${H-B+18}" text-anchor="middle" fill="var(--text)" font-size="11">${c.name.replace('市','')}</text>`;
-    });
-
-    $("#trendSvg").innerHTML = s;
+    document.getElementById("histTitle").textContent = `${year}年度在库企业数`;
+    const targets = D.cities.map(c => c.yearly[String(year)] || 0);
+    const from = hist.cur.slice();
+    if (hist.anim) cancelAnimationFrame(hist.anim);
+    const bars = svg.querySelectorAll(".hist-bar"), vals = svg.querySelectorAll(".hist-val");
+    const t0 = performance.now(), dur = RM ? 0 : 1800;
+    (function fr(t) {
+      const p = dur === 0 ? 1 : Math.min(1, (t - t0) / dur), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      D.cities.forEach((c, i) => {
+        const v = from[i] + (targets[i] - from[i]) * e;
+        hist.cur[i] = v;
+        const y = Y(v);
+        bars[i].setAttribute("y", y);
+        bars[i].setAttribute("height", Math.max(1, H - B - y));
+        const aboveY = y - 8, inside = aboveY < 30;
+        vals[i].setAttribute("y", inside ? y + 16 : aboveY);
+        vals[i].setAttribute("fill", inside ? "#ffffff" : "var(--cyan)");
+        vals[i].textContent = fmtN(Math.round(v));
+      });
+      if (p < 1) hist.anim = requestAnimationFrame(fr);
+    })(t0);
   }
 
   drawHistogram(currentYearIdx);
@@ -484,35 +562,66 @@ function boot(D) {
     paintYear(2024);
   }
 
-  $("#methodStrip").innerHTML = `<b>估值模型：</b>行业基准×区位系数×年限因子×连续性×专利加成，分位对齐NEEQ市场分布，潜力企业指系统估值≥1亿元。<b>验证结果：</b>R模型样本外命中率65.7%（143个验证事件）。<b>技术架构：</b>Qwen3.5-9B微调引擎 + 多因子量化模型。`;
-
   $("#footLine").innerHTML = `<span><strong>数据来源：</strong>六城科技型中小企业名单、工商注册信息、专利数据、NEEQ披露。在库企业=当年在库（含延续）。潜力企业=估值≥1亿元。</span><span style="margin-left:auto">更新时间 ${esc(D.meta.generated_at)} · 智能估值系统</span>`;
 
-  const LOC_DEMO = { "北京市": 1.00, "上海市": 1.02, "深圳市": 1.05, "广州市": 0.95, "南京市": 0.92, "杭州市": 0.98 };
-  const rMoney = v => v >= 1e8 ? (Math.round(v / 1e7) / 10).toFixed(1) + "亿" : fmtY(Math.round(v));
-  $("#q_go").addEventListener("click", () => {
-    const nm = $("#q_name").value.trim(), ind = $("#q_ind").value, rv = parseFloat($("#q_rev").value);
-    const city = $("#q_city").value;
-    let yrs = parseInt($("#q_yrs").value, 10); if (!Number.isFinite(yrs) || yrs < 0) yrs = 0; yrs = Math.min(8, yrs);
-    let pat = parseInt($("#q_pat").value, 10); if (!Number.isFinite(pat) || pat < 0) pat = 0; pat = Math.min(200, pat);
-    const mult = SECTOR_MULT[ind] || 7;
-    if (!(Number.isFinite(rv) && rv > 0)) {
-      $("#q_out").innerHTML = `<span style="color:var(--amber)">请输入年收入（万元）：无规模锚，无法测算，不编造数字。</span>`;
-      return;
+  // Tech pipeline thumbnail: animated neural network, click opens full pipeline page
+  (function buildThumbNn() {
+    const svg = document.getElementById("thumbNn"); if (!svg) return;
+    const NS = "http://www.w3.org/2000/svg", W = 520, H = 260, layers = [6, 7, 7, 7, 4];
+    const labs = ["输入层", "隐藏层", "隐藏层", "隐藏层", "输出层"];
+    const xs = layers.map((_, i) => 44 + i * (W - 88) / (layers.length - 1));
+    const nodes = layers.map((n) => {
+      const arr = [], span = Math.min(176, n * 26), y0 = (H - 34 - span) / 2 + 6;
+      for (let i = 0; i < n; i++) arr.push({ x: 0, y: y0 + span * i / (n - 1) });
+      return arr;
+    });
+    nodes.forEach((layer, li) => layer.forEach(p => p.x = xs[li]));
+    const edges = [];
+    for (let l = 0; l < layers.length - 1; l++) for (const a of nodes[l]) for (const b of nodes[l + 1]) {
+      const e = document.createElementNS(NS, "line");
+      e.setAttribute("x1", a.x); e.setAttribute("y1", a.y);
+      e.setAttribute("x2", b.x); e.setAttribute("y2", b.y);
+      e.setAttribute("stroke", l === layers.length - 2 ? "rgba(255,190,85,.30)" : "rgba(90,180,255,.24)");
+      e.setAttribute("stroke-width", "0.9");
+      svg.appendChild(e); edges.push(e);
     }
-    const loc = LOC_DEMO[city] ?? 1, yf = 1 + 0.02 * yrs, pf = 1 + Math.min(pat, 100) * 0.002;
-    const base = rv * 1e4 * mult, val = base * loc * yf * pf;
-    $("#q_out").innerHTML =
-      `<div class="trial-rows">` +
-      `<div><span>测算对象</span><strong>${esc(nm || "未具名企业")} · ${esc(ind)} · 年收入 ${fmtN(rv)} 万元</strong></div>` +
-      `<div><span>规模基准</span><strong>年收入 × ${mult} ≈ ${rMoney(base)}</strong></div>` +
-      `<div><span>区位系数</span><strong>${esc(city)} × ${loc.toFixed(2)}（演示）</strong></div>` +
-      `<div><span>年限因子</span><strong>× ${yf.toFixed(2)}（入库${yrs}年）</strong></div>` +
-      `<div><span>专利加成</span><strong>× ${pf.toFixed(3)}（${pat}项）</strong></div>` +
-      `<div><span>综合估值</span><strong><b>${rMoney(val)}</b></strong></div>` +
-      `<div><span>演示区间</span><strong>${rMoney(val * .62)} – ${rMoney(val * 1.6)}（0.62×–1.6×）</strong></div>` +
-      `</div><div class="trial-note">各系数均为演示口径，仅示意多因子方法逻辑，不构成估值意见。</div>`;
-  });
+    edges.forEach((e, i) => { if (i % 4 === 0) { e.style.strokeDasharray = "4 8"; e.style.animation = `dashflow ${1.4 + Math.random() * 1.8}s linear infinite`; } });
+    nodes.forEach((layer, li) => layer.forEach(p => {
+      const c = document.createElementNS(NS, "circle");
+      const out = li === layers.length - 1;
+      c.setAttribute("cx", p.x); c.setAttribute("cy", p.y); c.setAttribute("r", out ? 6 : 5);
+      c.setAttribute("fill", out ? "#ffbe55" : "#2ed7ff");
+      c.setAttribute("class", "pulse-dot");
+      c.style.color = out ? "#ffbe55" : "#2ed7ff";
+      c.style.animation = `thumbPulse ${1.8 + Math.random() * 2}s ease-in-out ${Math.random() * 2}s infinite`;
+      svg.appendChild(c);
+    }));
+    labs.forEach((t, li) => {
+      const tx = document.createElementNS(NS, "text");
+      tx.setAttribute("x", xs[li]); tx.setAttribute("y", H - 8);
+      tx.setAttribute("text-anchor", "middle"); tx.setAttribute("fill", "#8eafd0"); tx.setAttribute("font-size", "12.5");
+      tx.textContent = t; svg.appendChild(tx);
+    });
+    if (RM) return;
+    function pulse() {
+      const path = nodes.map(layer => layer[Math.floor(Math.random() * layer.length)]);
+      const dot = document.createElementNS(NS, "circle");
+      dot.setAttribute("r", "3.2"); dot.setAttribute("fill", "#eaf8ff");
+      dot.setAttribute("class", "pulse-dot"); dot.style.color = "#9fe4ff";
+      svg.appendChild(dot);
+      let seg = 0, t0 = performance.now(); const segDur = 300;
+      (function step(t) {
+        if (seg >= path.length - 1) { dot.remove(); return; }
+        const k = Math.min((t - t0) / segDur, 1), a = path[seg], b = path[seg + 1];
+        dot.setAttribute("cx", a.x + (b.x - a.x) * k); dot.setAttribute("cy", a.y + (b.y - a.y) * k);
+        if (k === 1) { seg++; t0 = t; }
+        requestAnimationFrame(step);
+      })(t0);
+    }
+    setInterval(pulse, 900); pulse();
+  })();
+  document.getElementById("techThumb").addEventListener("click", openPipe);
+  document.getElementById("pipeModal").addEventListener("click", e => { if (e.target.id === "pipeModal") closePipe(); });
 
   fit();
   document.querySelectorAll(".marquee-track").forEach(t => {
@@ -601,6 +710,12 @@ function boot(D) {
   }
 
   // Delegated clicks: company rows -> company modal, city headers -> city modal
+  document.addEventListener("keydown", e => {
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches(".citymini .mq-row")) {
+      e.preventDefault();
+      e.target.click();
+    }
+  });
   document.addEventListener("click", e => {
     const row = e.target.closest(".mq-row, #bjTop tbody tr, .citymini tr");
     if (row) {
@@ -638,7 +753,7 @@ function boot(D) {
     setInterval(() => {
       currentYearIdx = (currentYearIdx + 1) % years.length;
       tickYear(years[currentYearIdx]);
-    }, 2500);
+    }, 5000);
   }
 }
 fetch("src/showcase-data.json", { cache: "no-store" }).then(r => r.json()).then(boot);
