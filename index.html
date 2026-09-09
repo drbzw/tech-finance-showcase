@@ -334,8 +334,10 @@ function fit() {
 window.addEventListener("resize", fit);
 
 function openPipe() {
+  const modal = document.getElementById("pipeModal");
+  if (modal.parentElement !== document.body) document.body.appendChild(modal);
   document.getElementById("pipeFrame").src = "pipeline.html";
-  document.getElementById("pipeModal").classList.add("show");
+  modal.classList.add("show");
 }
 function closePipe() {
   document.getElementById("pipeModal").classList.remove("show");
